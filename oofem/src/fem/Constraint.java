@@ -20,9 +20,9 @@ public class Constraint {
 		String[] string = new String[this.free.length];
 		for (int i = 0; i < this.free.length; i++) {
 			if (this.free[i] == true) {
-				string[i] = "free";
+				string[i] = "          free";
 			} else {
-				string[i] = "fixed";
+				string[i] = "         fixed";
 			}
 		}
 		return string;

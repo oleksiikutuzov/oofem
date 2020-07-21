@@ -46,15 +46,22 @@ public class Structure {
 			System.out.println(ArrayFormat.format(i) + MatrixFormat.format(this.getNode(i).getPosition()));
 		}
 
-		/*
-		 * System.out.println("\nConstraints"); for (int i = 0; i <
-		 * this.getNumberOfNodes(); i++) { if (this.getNode(i).getConstraint() == null)
-		 * { break; } else {
-		 * System.out.println(ArrayFormat.format(this.getNode(i).getConstraint().
-		 * getStringArray())); }
-		 * 
-		 * }
-		 */
+		
+		System.out.println("\nConstraints");
+		System.out.println(ArrayFormat.iFormat(" node            u1             u2             u3"));
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			if (this.getNode(i).getConstraint() != null) {
+				System.out.println(ArrayFormat.format(i) + ArrayFormat.format(this.getNode(i).getConstraint().getStringArray()));
+				}
+		}
+		
+		System.out.println("\nForces");
+		System.out.println(ArrayFormat.iFormat(" node            r1             r2             r3"));
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			if (this.getNode(i).getForce() != null) {
+				System.out.println(ArrayFormat.format(i) + ArrayFormat.format(this.getNode(i).getForce().getComponentArray()));
+				}
+		}
 		
 		System.out.println("\nElements");
 		System.out.println(ArrayFormat.iFormat("  idx             E              A         length"));
