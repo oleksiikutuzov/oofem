@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry excluding="fem/|test/|src/" kind="src" path=""/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="/Users/user/Documents/OOFEM_Java_lib/lib/bo-fbb-informatik.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/user/Documents/OOFEM_Java_lib/lib/bo-fbb-informatik-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
