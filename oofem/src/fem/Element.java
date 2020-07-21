@@ -46,9 +46,10 @@ public class Element {
 		return this.dofNumbers;
 	}
 
-	public Vector3D getE1() {
+/*	public Vector3D getE1() {
 
 	}
+*/
 
 	public double getLenght() {
 		double xLength = node2.getPosition().getX1() - node1.getPosition().getX1();
