@@ -32,5 +32,8 @@ public class Test1 {
 		System.out.println(ArrayFormat.format(n2.getDOFNumbers()));
 		System.out.println("Equation numbers of element DOFs");
 		System.out.println(ArrayFormat.format(e1.getDOFNumbers()));
+		
+		e1.print();
+		
 	}
 }

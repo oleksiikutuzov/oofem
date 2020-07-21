@@ -1,6 +1,7 @@
 package fem;
 
 import iceb.jnumerics.*;
+import inf.text.ArrayFormat;
 
 public class Element {
 
@@ -18,7 +19,7 @@ public class Element {
 	}
 
 	public IMatrix computeStiffnessMatrix() {
-		IMatrix matrix = new Array2DMatrix(2,2);
+		IMatrix matrix = new Array2DMatrix(2, 2);
 		double coeff = this.getEModulus() * this.getArea() / this.getLenght();
 		matrix.add(1, 1, coeff * 1);
 		matrix.add(1, 2, coeff * -1);
@@ -26,24 +27,11 @@ public class Element {
 		matrix.add(2, 2, coeff * 1);
 		return matrix;
 	}
-	
-	// get dofNumbers from Nodes
-	public void enumerateDOFs() {
-		int start = 0;
-		for (int i = 0; i < 3; i++) {
-			if (this.node1.getConstraint().isFree(i) == false) {
-				this.dofNumbers[2 * i] = -1;
-			} else {
-				this.dofNumbers[2 * i] = start;
-				start++;
-			}
 
-			if (this.node2.getConstraint().isFree(i) == false) {
-				this.dofNumbers[2 * i + 1] = -1;
-			} else {
-				this.dofNumbers[2 * i + 1] = start;
-				start++;
-			}
+	public void enumerateDOFs() {
+		for (int i = 0; i < 3; i++) {
+			this.dofNumbers[i] = this.node1.getDOFNumbers()[i];
+			this.dofNumbers[i + 3] = this.node2.getDOFNumbers()[i];
 		}
 
 	}
@@ -52,10 +40,11 @@ public class Element {
 		return this.dofNumbers;
 	}
 
-/*	public Vector3D getE1() {
-
-	}
-*/
+	/*
+	 * public Vector3D getE1() {
+	 * 
+	 * }
+	 */
 
 	public double getLenght() {
 		double xLength = node2.getPosition().getX1() - node1.getPosition().getX1();
@@ -80,9 +69,9 @@ public class Element {
 		return this.eModulus;
 	}
 
-/*	public void print() {
-
-	}
-*/
 	
+	public void print() {
+		System.out.println(ArrayFormat.format(this.getDOFNumbers()));
+	  }
+
 }

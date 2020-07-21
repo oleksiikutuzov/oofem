@@ -1,6 +1,7 @@
 package fem;
 
 import iceb.jnumerics.*;
+import inf.text.ArrayFormat;
 //import inf.text.ArrayFormat;
 
 public class Node {
@@ -61,6 +62,7 @@ public class Node {
 
 	public void print() {
 		System.out.println(MatrixFormat.format(this.position));
+		System.out.println(ArrayFormat.format(this.constraint.getStringArray()));
 	}
 
 }
