@@ -18,10 +18,16 @@ public class Element {
 	}
 
 	public IMatrix computeStiffnessMatrix() {
-		IMatrix matrix = new Array2DMatrix(3,3);
+		IMatrix matrix = new Array2DMatrix(2,2);
+		double coeff = this.getEModulus() * this.getArea() / this.getLenght();
+		matrix.add(1, 1, coeff * 1);
+		matrix.add(1, 2, coeff * -1);
+		matrix.add(2, 1, coeff * -1);
+		matrix.add(2, 2, coeff * 1);
 		return matrix;
 	}
-
+	
+	// get dofNumbers from Nodes
 	public void enumerateDOFs() {
 		int start = 0;
 		for (int i = 0; i < 3; i++) {
@@ -74,7 +80,9 @@ public class Element {
 		return this.eModulus;
 	}
 
-	public void print() {
+/*	public void print() {
 
 	}
+*/
+	
 }

@@ -12,7 +12,7 @@ public class Test1 {
 		Node n2 = new Node(1, 1, 0);
 		Element e1 = new Element(1, 1, n1, n2);
 		Constraint c1 = new Constraint(false, true, true);
-		Constraint c2 = new Constraint(true, false, true);
+		Constraint c2 = new Constraint(true, true, true);
 		
 		// set constraints
 		n1.setConstraint(c1);
