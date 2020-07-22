@@ -1,11 +1,12 @@
 package models;
 
+import inf.v3d.*;
+import inf.v3d.view.*;
 import fem.Constraint;
 import fem.Force;
 import fem.Node;
 import fem.Structure;
 import fem.Visualiser;
-import inf.v3d.view.Viewer;
 
 public class SmallTetraeder {
 
@@ -45,18 +46,16 @@ public class SmallTetraeder {
 	}
 
 	public static void main(String[] args) {
-//		Viewer viewer = new Viewer();
+		Viewer viewer = new Viewer();
 		Structure struct = createStructure();
-/*		Visualiser viz = new Visualiser(struct, viewer);
-		viz.setConstraintSymbolScale(1);
-		viz.setForceSymbolScale(3e-5);
-		viz.setForceSymbolRadius(0.075);
+		Visualiser viz = new Visualiser(struct, viewer);
+//		viz.setConstraintSymbolScale(1);
+//		viz.setForceSymbolScale(3e-5);
+//		viz.setForceSymbolRadius(0.075);
 		viz.drawElements();
-		viz.drawConstraints();
-		viz.drawForces();
+//		viz.drawConstraints();
+//		viz.drawForces();
 		viewer.setVisible(true);
-		*/
 		
-		struct.printStructure();
 	}
 }

@@ -1,5 +1,6 @@
 package fem;
 
+
 import inf.text.ArrayFormat;
 
 public class Constraint {

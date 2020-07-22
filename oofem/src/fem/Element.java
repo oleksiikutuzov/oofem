@@ -19,13 +19,37 @@ public class Element {
 	}
 
 	public IMatrix computeStiffnessMatrix() {
-		IMatrix matrix = new Array2DMatrix(2, 2);
+		
+		// calculate variables
+		double c1 = (this.getNode2().getPosition().getX1() - this.getNode1().getPosition().getX1()) / this.getLenght();
+		double c2 = (this.getNode2().getPosition().getX2() - this.getNode1().getPosition().getX2()) / this.getLenght();
+		double c3 = (this.getNode2().getPosition().getX3() - this.getNode1().getPosition().getX3()) / this.getLenght();
 		double coeff = this.getEModulus() * this.getArea() / this.getLenght();
-		matrix.add(1, 1, coeff * 1);
-		matrix.add(1, 2, coeff * -1);
-		matrix.add(2, 1, coeff * -1);
-		matrix.add(2, 2, coeff * 1);
-		return matrix;
+		
+		// initialise matrices
+		IMatrix k_glob = new Array2DMatrix(6, 6);
+		IMatrix k_part = new Array2DMatrix(3, 3);
+		
+		// fill small matrix
+		k_part.set(0, 0, coeff * c1 * c1);
+		k_part.set(0, 1, coeff * c1 * c2);
+		k_part.set(0, 2, coeff * c1 * c3);
+		k_part.set(1, 0, coeff * c2 * c1);
+		k_part.set(1, 1, coeff * c2 * c2);
+		k_part.set(1, 2, coeff * c2 * c3);
+		k_part.set(2, 0, coeff * c3 * c1);
+		k_part.set(2, 1, coeff * c3 * c2);
+		k_part.set(2, 2, coeff * c3 * c3);
+		
+		// set parts
+		k_glob.setMatrix(0, 0, k_part);
+		k_glob.setMatrix(0, 3, k_part.multiply(-1));
+		k_glob.setMatrix(3, 0, k_part.multiply(-1));
+		k_glob.setMatrix(3, 3, k_part);
+
+		// System.out.print(MatrixFormat.format(k_glob));
+
+		return k_glob;
 	}
 
 	public void enumerateDOFs() {
@@ -69,9 +93,9 @@ public class Element {
 		return this.eModulus;
 	}
 
-	
 	public void print() {
-		System.out.println(ArrayFormat.format(this.getEModulus()) + ArrayFormat.format(this.getArea()) + ArrayFormat.format(this.getLenght()));
-	  }
+		System.out.println(ArrayFormat.format(this.getEModulus()) + ArrayFormat.format(this.getArea())
+				+ ArrayFormat.format(this.getLenght()));
+	}
 
 }

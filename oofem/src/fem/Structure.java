@@ -71,20 +71,15 @@ public class Structure {
 	}
 
 	public void solve() {
-		int start = 0;
-		for (int i = 0; i < this.getNumberOfNodes(); i++) {
-			start = this.getNode(i).enumerateDOFs(start);
-		}
+		enumerateDOFs();
 		
-		for (int i = 0; i < this.getNumberOfElements(); i++) {
-			this.getElement(i).enumerateDOFs();
-		}
+		
 	}
 
 	private int enumerateDOFs() {
 		int start = 0;
 		for (int i = 0; i < this.getNumberOfNodes(); i++) {
-			this.getNode(i).enumerateDOFs(start);
+			start = this.getNode(i).enumerateDOFs(start);
 		}
 		for (int k = 0; k < this.getNumberOfElements(); k++) {
 			this.getElement(k).enumerateDOFs();
@@ -97,11 +92,13 @@ public class Structure {
 	}
 
 	private void assembleStiffnessMatrix(IMatrix kGlobal) {
+		
+		
 
 	}
 
 	private void selectDisplacements(double[] uGlobal) {
-
+		
 	}
 
 	public void printResults() {
