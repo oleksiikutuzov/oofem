@@ -48,12 +48,12 @@ public class SmallTetraeder {
 		Viewer viewer = new Viewer();
 		Structure struct = createStructure();
 		Visualiser viz = new Visualiser(struct, viewer);
-//		viz.setConstraintSymbolScale(1);
-//		viz.setForceSymbolScale(3e-5);
-//		viz.setForceSymbolRadius(0.075);
 		viz.drawElements();
-//		viz.drawConstraints();
-//		viz.drawForces();
+		viz.setConstraintSymbolScale(0.8);
+		viz.drawConstraints();
+		viz.setForceSymbolScale(2);
+		viz.setForceSymbolRadius(0.1);
+		viz.drawElementForces();
 		viewer.setVisible(true);
 		
 	}
