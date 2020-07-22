@@ -1,6 +1,7 @@
 package fem;
 
-import iceb.jnumerics.*;
+import iceb.jnumerics.Array2DMatrix;
+import iceb.jnumerics.IMatrix;
 import inf.text.ArrayFormat;
 
 public class Element {

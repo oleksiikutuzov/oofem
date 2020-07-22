@@ -1,8 +1,8 @@
 package test;
 
-import iceb.jnumerics.*;
-import inf.text.ArrayFormat;
-import fem.Element;
+import iceb.jnumerics.Array2DMatrix;
+import iceb.jnumerics.IMatrix;
+import iceb.jnumerics.MatrixFormat;
 
 public class Test2 {
 

@@ -1,11 +1,11 @@
 package models;
 
-import inf.v3d.view.Viewer;
 import fem.Constraint;
 import fem.Force;
 import fem.Node;
 import fem.Structure;
 import fem.Visualiser;
+import inf.v3d.view.Viewer;
 
 public class SmallTetraeder {
 

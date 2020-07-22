@@ -1,9 +1,10 @@
 package fem;
 
-import iceb.jnumerics.*;
-import inf.text.ArrayFormat;
+import java.util.ArrayList;
 
-import java.util.*;
+import iceb.jnumerics.IMatrix;
+import iceb.jnumerics.MatrixFormat;
+import inf.text.ArrayFormat;
 
 public class Structure {
 

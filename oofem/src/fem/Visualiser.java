@@ -1,7 +1,7 @@
 package fem;
 
-import inf.v3d.obj.*;
-import inf.v3d.view.*;;
+import inf.v3d.obj.CylinderSet;
+import inf.v3d.view.Viewer;;
 
 public class Visualiser {
 	

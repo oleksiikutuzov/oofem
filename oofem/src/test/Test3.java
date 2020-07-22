@@ -1,11 +1,7 @@
 package test;
 
-import fem.Constraint;
-import fem.Node;
-import fem.Force;
 import fem.Element;
-import fem.Structure;
-import inf.text.ArrayFormat;
+import fem.Node;
 
 public class Test3 {
 

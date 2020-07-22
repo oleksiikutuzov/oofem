@@ -1,8 +1,7 @@
 package fem;
 
-import iceb.jnumerics.*;
-import inf.text.ArrayFormat;
-//import inf.text.ArrayFormat;
+import iceb.jnumerics.MatrixFormat;
+import iceb.jnumerics.Vector3D;
 
 public class Node {
 
