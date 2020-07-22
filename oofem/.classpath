@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="lib" path="C:/Users/Алексей/Documents/bo-fbb-informatik-win64/lib/bo-fbb-informatik.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/user/lib/bo-fbb-informatik-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/user/lib/natives"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry excluding="fem/|test/|src/" kind="src" path="">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/user/lib/natives"/>
@@ -7,12 +13,6 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/user/lib/natives"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/user/lib/bo-fbb-informatik.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/user/lib/bo-fbb-informatik-javadoc.jar!/"/>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/user/lib/natives"/>
 		</attributes>
 	</classpathentry>
