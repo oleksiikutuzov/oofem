@@ -1,7 +1,6 @@
 package models;
 
-import inf.v3d.*;
-import inf.v3d.view.*;
+import inf.v3d.view.Viewer;
 import fem.Constraint;
 import fem.Force;
 import fem.Node;
