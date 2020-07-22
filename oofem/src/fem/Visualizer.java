@@ -8,7 +8,7 @@ import inf.v3d.obj.Arrow;
 import inf.v3d.obj.Cone;
 import inf.v3d.view.Viewer;
 
-public class Visualiser {
+public class Visualizer {
 	
 	private double displacementScale;
 	private double constraintScale = 1;
@@ -17,7 +17,7 @@ public class Visualiser {
 	private Structure structure;
 	private Viewer viewer;
 	
-	public Visualiser(Structure struct, Viewer viewer) {
+	public Visualizer(Structure struct, Viewer viewer) {
 		this.structure = struct;
 		this.viewer = viewer;
 	}

@@ -4,7 +4,7 @@ import fem.Constraint;
 import fem.Force;
 import fem.Node;
 import fem.Structure;
-import fem.Visualiser;
+import fem.Visualizer;
 import inf.v3d.view.Viewer;
 
 public class SmallTetraeder {
@@ -47,7 +47,7 @@ public class SmallTetraeder {
 	public static void main(String[] args) {
 		Viewer viewer = new Viewer();
 		Structure struct = createStructure();
-		Visualiser viz = new Visualiser(struct, viewer);
+		Visualizer viz = new Visualizer(struct, viewer);
 		viz.drawElements();
 		viz.setConstraintSymbolScale(0.8);
 		viz.drawConstraints();
