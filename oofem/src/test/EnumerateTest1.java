@@ -5,7 +5,7 @@ import fem.Element;
 import fem.Node;
 import inf.text.ArrayFormat;
 
-public class Test1 {
+public class EnumerateTest1 {
 	public static void main(String[] args) {
 		int eqn = 0;
 		Node n1 = new Node(0, 0, 0);
@@ -32,8 +32,7 @@ public class Test1 {
 		System.out.println(ArrayFormat.format(n2.getDOFNumbers()));
 		System.out.println("Equation numbers of element DOFs");
 		System.out.println(ArrayFormat.format(e1.getDOFNumbers()));
-		
-		e1.print();
+
 		
 	}
 }

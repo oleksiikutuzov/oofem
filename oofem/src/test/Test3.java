@@ -18,7 +18,6 @@ public class Test3 {
 		Element e2 = new Element(20,1,n2,n3);
 		Element e3 = new Element(20,1,n1,n3);
 		
-		Structure s1 = new Structure 
 
 	}
 

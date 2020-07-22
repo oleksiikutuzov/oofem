@@ -71,7 +71,7 @@ public class Element {
 
 	
 	public void print() {
-		System.out.println(ArrayFormat.format(this.getDOFNumbers()));
+		System.out.println(ArrayFormat.format(this.getEModulus()) + ArrayFormat.format(this.getArea()) + ArrayFormat.format(this.getLenght()));
 	  }
 
 }

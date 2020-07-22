@@ -71,7 +71,14 @@ public class Structure {
 	}
 
 	public void solve() {
-
+		int start = 0;
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			start = this.getNode(i).enumerateDOFs(start);
+		}
+		
+		for (int i = 0; i < this.getNumberOfElements(); i++) {
+			this.getElement(i).enumerateDOFs();
+		}
 	}
 
 	private int enumerateDOFs() {

@@ -18,7 +18,8 @@ public class SmallTetraeder {
 		double e = 2.1e11;
 		Constraint c1 = new Constraint(false, false, false);
 		Constraint c2 = new Constraint(true, true, false);
-		Force f = new Force(0, -20e3, -100e3);
+		Force f1 = new Force(0, -20e3, -100e3);
+		Force f2 = new Force(-20e3, 0, 50e3);
 
 		// create nodes
 		Node n1 = struct.addNode(0.0, 0.0, lb * Math.sqrt(2.0 / 3.0));
@@ -26,7 +27,8 @@ public class SmallTetraeder {
 		Node n3 = struct.addNode(-lb / 2, -lb / Math.sqrt(12.0), 0);
 		Node n4 = struct.addNode(lb / 2, -lb / Math.sqrt(12.0), 0);
 		// apply BCs
-		n1.setForce(f);
+		n1.setForce(f1);
+		n2.setForce(f2);
 		n2.setConstraint(c1);
 		n3.setConstraint(c1);
 		n4.setConstraint(c2);

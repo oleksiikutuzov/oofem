@@ -34,8 +34,13 @@ public class Node {
 
 	public int enumerateDOFs(int start) {
 		for (int i = 0; i < 3; i++) {
-			if (this.constraint.isFree(i) == false) {
-				this.dofNumbers[i] = -1;
+			if (this.getConstraint() != null) {
+				if (this.constraint.isFree(i) == false) {
+					this.dofNumbers[i] = -1;
+				} else {
+					this.dofNumbers[i] = start;
+					start++;
+				}
 			} else {
 				this.dofNumbers[i] = start;
 				start++;
@@ -62,7 +67,6 @@ public class Node {
 
 	public void print() {
 		System.out.println(MatrixFormat.format(this.position));
-		System.out.println(ArrayFormat.format(this.constraint.getStringArray()));
 	}
 
 }
