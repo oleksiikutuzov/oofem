@@ -1,9 +1,7 @@
 package fem;
 
 import inf.v3d.obj.CylinderSet;
-
 import java.awt.Color;
-
 import inf.v3d.obj.Arrow;
 import inf.v3d.obj.Cone;
 import inf.v3d.view.Viewer;

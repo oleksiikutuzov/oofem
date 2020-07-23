@@ -2,6 +2,7 @@ package fem;
 
 import java.util.ArrayList;
 
+import iceb.jnumerics.Array2DMatrix;
 import iceb.jnumerics.IMatrix;
 import iceb.jnumerics.MatrixFormat;
 import inf.text.ArrayFormat;
@@ -71,8 +72,14 @@ public class Structure {
 		}
 	}
 
-	public void solve() {
-		enumerateDOFs();
+	public void solve() {	
+		int NEQ = enumerateDOFs();
+		IMatrix kGlobal = new Array2DMatrix(NEQ, NEQ);
+		assembleStiffnessMatrix(kGlobal);
+		
+		System.out.println("Assembled global matrix");
+		System.out.println(MatrixFormat.format(kGlobal));
+		
 		
 		
 	}
@@ -93,7 +100,17 @@ public class Structure {
 	}
 
 	private void assembleStiffnessMatrix(IMatrix kGlobal) {
-		
+		int NEQ = enumerateDOFs();
+		for (int i = 0; i < this.getNumberOfElements(); i++) {
+			for (int j = 0; j < NEQ; j++) {
+				for (int k = 0; k < NEQ; k++) {
+					if (this.getElement(i).getDOFNumbers()[j] != -1 && this.getElement(i).getDOFNumbers()[k] != -1) {
+						kGlobal.add(j, k, this.getElement(i).computeStiffnessMatrix().get(j, k));
+					}
+				}
+				
+			}
+		}
 		
 
 	}
