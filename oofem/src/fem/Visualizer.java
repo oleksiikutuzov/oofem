@@ -2,36 +2,38 @@ package fem;
 
 import java.awt.Color;
 
+import iceb.jnumerics.Vector3D;
+import inf.text.ArrayFormat;
 import inf.v3d.obj.Arrow;
 import inf.v3d.obj.Cone;
 import inf.v3d.obj.CylinderSet;
 import inf.v3d.view.Viewer;
 
 public class Visualizer {
-	
-	private double displacementScale;
+
+	private double displacementScale = 1;
 	private double constraintScale = 1;
 	private double arrowRadiusScale = 1;
 	private double arrowShaftScale = 1;
 	private Structure structure;
 	private Viewer viewer;
-	
+
 	public Visualizer(Structure struct, Viewer viewer) {
 		this.structure = struct;
 		this.viewer = viewer;
 	}
-	
+
 	public void drawElements() {
 		CylinderSet cs = new CylinderSet();
-		
+
 		for (int i = 0; i < this.structure.getNumberOfElements(); i++) {
-			cs.addCylinder(this.structure.getElement(i).getNode1().getPosition().toArray(), 
-					this.structure.getElement(i).getNode2().getPosition().toArray(), 
+			cs.addCylinder(this.structure.getElement(i).getNode1().getPosition().toArray(),
+					this.structure.getElement(i).getNode2().getPosition().toArray(),
 					Math.sqrt(this.structure.getElement(i).getArea() / Math.PI));
 		}
 		this.viewer.addObject3D(cs);
 	}
-	
+
 	public void drawConstraints() {
 		for (int i = 0; i < this.structure.getNumberOfNodes(); i++) {
 			if (this.structure.getNode(i).getConstraint() != null) {
@@ -39,7 +41,7 @@ public class Visualizer {
 					Cone cone = new Cone();
 					cone.setHeight(this.constraintScale);
 					cone.setRadius(this.constraintScale / 2);
-					cone.setColor(new Color(0,0,255));
+					cone.setColor(new Color(0, 0, 255));
 					if (this.structure.getNode(i).getConstraint().isFree(j) == false && j == 0) {
 						cone.setDirection(1, 0, 0);
 						cone.setCenter(this.structure.getNode(i).getPosition().getX1() - this.constraintScale,
@@ -58,12 +60,12 @@ public class Visualizer {
 								this.structure.getNode(i).getPosition().getX2(),
 								this.structure.getNode(i).getPosition().getX3() - this.constraintScale);
 						this.viewer.addObject3D(cone);
-					} 
+					}
 				}
 			}
 		}
 	}
-	
+
 	public void drawElementForces() {
 		for (int i = 0; i < this.structure.getNumberOfNodes(); i++) {
 			if (this.structure.getNode(i).getForce() != null) {
@@ -73,43 +75,70 @@ public class Visualizer {
 					arrow.setPoint2(this.structure.getNode(i).getPosition().getX1(),
 							this.structure.getNode(i).getPosition().getX2(),
 							this.structure.getNode(i).getPosition().getX3());
-					arrow.setColor(new Color(255,0,0));
+					arrow.setColor(new Color(255, 0, 0));
 					if (this.structure.getNode(i).getForce().getComponent(j) != 0 && j == 0) {
-						arrow.setPoint1(this.structure.getNode(i).getPosition().getX1() + this.arrowShaftScale * Math.signum(this.structure.getNode(i).getForce().getComponentArray()[j]),
+						arrow.setPoint1(
+								this.structure.getNode(i).getPosition().getX1() + this.arrowShaftScale
+										* Math.signum(this.structure.getNode(i).getForce().getComponentArray()[j]),
 								this.structure.getNode(i).getPosition().getX2(),
 								this.structure.getNode(i).getPosition().getX3());
 						this.viewer.addObject3D(arrow);
 					} else if (this.structure.getNode(i).getForce().getComponent(j) != 0 && j == 1) {
 						arrow.setPoint1(this.structure.getNode(i).getPosition().getX1(),
-								this.structure.getNode(i).getPosition().getX2() + this.arrowShaftScale * Math.signum(this.structure.getNode(i).getForce().getComponentArray()[j]),
+								this.structure.getNode(i).getPosition().getX2() + this.arrowShaftScale
+										* Math.signum(this.structure.getNode(i).getForce().getComponentArray()[j]),
 								this.structure.getNode(i).getPosition().getX3());
 						this.viewer.addObject3D(arrow);
 					} else if (this.structure.getNode(i).getForce().getComponent(j) != 0 && j == 2) {
 						arrow.setPoint1(this.structure.getNode(i).getPosition().getX1(),
 								this.structure.getNode(i).getPosition().getX2(),
-								this.structure.getNode(i).getPosition().getX3() + this.arrowShaftScale * Math.signum(this.structure.getNode(i).getForce().getComponentArray()[j]));
+								this.structure.getNode(i).getPosition().getX3() + this.arrowShaftScale
+										* Math.signum(this.structure.getNode(i).getForce().getComponentArray()[j]));
 						this.viewer.addObject3D(arrow);
-					} 
+					}
 				}
 			}
 		}
 	}
-	
+
 	public void drawDisplacements() {
-		
+
 	}
-	
+
 	public void setConstraintSymbolScale(double scale) {
 		this.constraintScale = scale;
 	}
-	
+
 	public void setForceSymbolScale(double scale) {
 		this.arrowShaftScale = scale;
 	}
-	
+
 	public void setForceSymbolRadius(double scale) {
 		this.arrowRadiusScale = scale;
-		
 	}
 
+	public void setDisplacementScale(double scale) {
+		this.displacementScale = scale;
+	}
+
+	public void drawDeformedElements() {
+		CylinderSet cs = new CylinderSet();
+
+		for (int i = 0; i < this.structure.getNumberOfElements(); i++) {
+			Vector3D node1 = this.structure.getElement(i).getNode1().getPosition().add(this.structure.getElement(i).getNode1().getDisplacement().multiply(this.displacementScale));
+			Vector3D node2 = this.structure.getElement(i).getNode2().getPosition().add(this.structure.getElement(i).getNode2().getDisplacement().multiply(this.displacementScale));
+
+			System.out.println("Node 1 position before and after displacement");
+			System.out.println(ArrayFormat.format(this.structure.getElement(i).getNode1().getPosition().toArray()));
+			System.out.println(ArrayFormat.format(node1.toArray()));
+			System.out.println("Node 2 position before and after displacement");
+			System.out.println(ArrayFormat.format(this.structure.getElement(i).getNode2().getPosition().toArray()));
+			System.out.println(ArrayFormat.format(node2.toArray()));
+			
+			cs.addCylinder(node1.toArray(), node2.toArray(), Math.sqrt(this.structure.getElement(i).getArea() / Math.PI));
+			Color green = new Color(0,255,0);
+			cs.setColor(green);
+		}
+		this.viewer.addObject3D(cs);
+	}
 }

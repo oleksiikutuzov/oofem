@@ -15,9 +15,9 @@ public class Structure {
 
 	private ArrayList<Node> nodes = new ArrayList<Node>();
 	private ArrayList<Element> elements = new ArrayList<Element>();
-	IMatrix kGlobal;
-	double[] rGlobal;
-	double[] uGlobal;
+	private IMatrix kGlobal;
+	private double[] rGlobal;
+	private double[] uGlobal;
 
 	public Node addNode(double x1, double x2, double x3) {
 		Node node = new Node(x1, x2, x3);
@@ -108,11 +108,11 @@ public class Structure {
 		}
 
 		// print
-		System.out.println("\nSolving A x = b");
-		System.out.println("Matrix A");
-		System.out.println(MatrixFormat.format(a));
-		System.out.println("Vector b");
-		System.out.println(ArrayFormat.format(b));
+		//System.out.println("\nSolving A x = b");
+		//System.out.println("Matrix A");
+		//System.out.println(MatrixFormat.format(a));
+		//System.out.println("Vector b");
+		//System.out.println(ArrayFormat.format(b));
 
 		// after calling solve , b contains the solution
 		try {
@@ -122,14 +122,16 @@ public class Structure {
 		}
 
 		// print result
-		System.out.println("Solution x");
-		System.out.println(ArrayFormat.format(b));
+		//System.out.println("Solution x");
+		//System.out.println(ArrayFormat.format(b));
 
 		this.uGlobal = b;
-		selectDisplacements(NEQ, this.uGlobal);
+		applyDisplacements(NEQ, this.uGlobal);
+		computeForces();
 		
-		printStructure();
+		//printStructure();
 		printResults();
+		
 
 		// System.out.println("\nAssembled global force matrix");
 		// System.out.println(ArrayFormat.format(rGlobal));
@@ -169,21 +171,21 @@ public class Structure {
 				for (int k = 0; k < NEQ; k++) {
 					if (this.getElement(i).getDOFNumbers()[j] != -1 && this.getElement(i).getDOFNumbers()[k] != -1) {
 						kGlobal.add(this.getElement(i).getDOFNumbers()[j], this.getElement(i).getDOFNumbers()[k],
-								this.getElement(i).computeStiffnessMatrix().get(j, k));
-					}
+								this.getElement(i).computeStiffnessMatrix2().get(j,k));
+					} 
 				}
 
 			}
+			//System.out.println(MatrixFormat.format(this.getElement(i).computeStiffnessMatrix()));
 		}
 
 	}
 
-	private void selectDisplacements(int NEQ, double[] uGlobal) {
+	private void applyDisplacements(int NEQ, double[] uGlobal) {
 		double[] disp = new double[3];
 		for (int i = 0; i < this.getNumberOfNodes(); i++) {
 			for (int k = 0; k < 3; k++) {
 				for (int j = 0; j < NEQ; j++) {
-
 					if (this.getNode(i).getDOFNumbers()[k] == j) {
 						disp[k] = this.uGlobal[j];
 					} else if (this.getNode(i).getDOFNumbers()[k] == -1) {
@@ -192,13 +194,13 @@ public class Structure {
 				}
 			}
 			this.getNode(i).setDisplacement(disp);
-			System.out.println(ArrayFormat.format(this.getNode(i).getDOFNumbers()));
-			System.out.println(MatrixFormat.format(this.getNode(i).getDisplacement()));
+			//System.out.println(ArrayFormat.format(this.getNode(i).getDOFNumbers()));
+			//System.out.println(MatrixFormat.format(this.getNode(i).getDisplacement()));
 		}
 	}
 
 	public void printResults() {
-		System.out.println("Listing analysis results");
+		System.out.println("\nListing analysis results");
 		System.out.println("\nDisplacements");
 		System.out.println(ArrayFormat.iFormat(" node            u1             u2             u3"));
 		for (int i = 0; i < this.getNumberOfNodes(); i++) {
@@ -206,6 +208,22 @@ public class Structure {
 				System.out.println(
 						ArrayFormat.format(i) + MatrixFormat.format(this.getNode(i).getDisplacement()));
 			}
+		}
+		System.out.println("\nElement forces");
+		System.out.println(ArrayFormat.iFormat(" elem         force"));
+		for (int i = 0; i < this.getNumberOfElements(); i++) {
+			System.out.println(
+					ArrayFormat.format(i) + ArrayFormat.format(this.getElement(i).computeForce()));
+		}
+	}
+	
+	public double[] getUGlobal() {
+		return this.uGlobal;
+	}
+	
+	public void computeForces() {
+		for (int i = 0; i < this.getNumberOfElements(); i++) {
+			this.getElement(i).computeForce();
 		}
 	}
 }

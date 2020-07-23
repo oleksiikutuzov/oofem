@@ -8,6 +8,8 @@ public class EnumerateTest2 {
 		Structure struct = SmallTetraeder.createStructure();
 		// solve
 		struct.solve();
+		
+		
 
 	}
 }

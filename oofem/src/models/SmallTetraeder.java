@@ -37,8 +37,8 @@ public class SmallTetraeder {
 		struct.addElement(e, a, 0, 1);
 		struct.addElement(e, a, 0, 2);
 		struct.addElement(e, a, 0, 3);
-		struct.addElement(e, a, 2, 1);
-		struct.addElement(e, a, 3, 2);
+		struct.addElement(e, a, 1, 2);
+		struct.addElement(e, a, 2, 3);
 		struct.addElement(e, a, 3, 1);
 		
 		//struct.printStructure();
@@ -49,6 +49,7 @@ public class SmallTetraeder {
 	public static void main(String[] args) {
 		Viewer viewer = new Viewer();
 		Structure struct = createStructure();
+		struct.solve();
 		Visualizer viz = new Visualizer(struct, viewer);
 		viz.drawElements();
 		viz.setConstraintSymbolScale(0.8);
@@ -56,6 +57,8 @@ public class SmallTetraeder {
 		viz.setForceSymbolScale(2);
 		viz.setForceSymbolRadius(0.1);
 		viz.drawElementForces();
+		viz.setDisplacementScale(3e3);
+		viz.drawDeformedElements();
 		viewer.setVisible(true);
 		
 	}

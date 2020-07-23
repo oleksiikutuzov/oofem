@@ -3,6 +3,7 @@ package fem;
 import iceb.jnumerics.Array2DMatrix;
 import iceb.jnumerics.BLAM;
 import iceb.jnumerics.IMatrix;
+import iceb.jnumerics.MatrixFormat;
 import inf.text.ArrayFormat;
 
 public class Element {
@@ -61,7 +62,7 @@ public class Element {
 		double c3 = (this.getNode2().getPosition().getX3() - this.getNode1().getPosition().getX3()) / this.getLenght();
 		double coeff = this.getEModulus() * this.getArea() / this.getLenght();
 		
-		//System.out.println(ArrayFormat.format(new double[]{c1, c2, c3, coeff}));
+		//System.out.println(ArrayFormat.format(new double[]{c1, c2, c3, coeff}) + "\n");
 		
 		// initialise matrices
 		IMatrix k_glob = new Array2DMatrix(6, 6);
@@ -84,7 +85,7 @@ public class Element {
 		k_glob.setMatrix(3, 0, k_part.multiply(-1));
 		k_glob.setMatrix(3, 3, k_part);
 
-		// System.out.print(MatrixFormat.format(k_glob));
+		//System.out.println(MatrixFormat.format(k_glob));
 
 		return k_glob;
 	}
@@ -94,7 +95,7 @@ public class Element {
 			this.dofNumbers[i] = this.node1.getDOFNumbers()[i];
 			this.dofNumbers[i + 3] = this.node2.getDOFNumbers()[i];
 		}
-		System.out.println(ArrayFormat.format(this.getDOFNumbers()));
+		//System.out.println(ArrayFormat.format(this.getDOFNumbers()));
 	}
 
 	public int[] getDOFNumbers() {
@@ -133,6 +134,47 @@ public class Element {
 	public void print() {
 		System.out.println(ArrayFormat.format(this.getEModulus()) + ArrayFormat.format(this.getArea())
 				+ ArrayFormat.format(this.getLenght()));
+	}
+	
+	public double computeForce() {
+		double[] displacement = new double[6];
+		for (int i = 0; i < 3; i++) {
+			displacement[i] = this.getNode1().getDisplacement().toArray()[i];
+			displacement[i+3] = this.getNode2().getDisplacement().toArray()[i];
+		}
+		//System.out.println("\nDisplacement Vector");
+		//System.out.println(ArrayFormat.format(displacement));
+		
+		double c1 = (this.getNode2().getPosition().getX1() - this.getNode1().getPosition().getX1()) / this.getLenght();
+		double c2 = (this.getNode2().getPosition().getX2() - this.getNode1().getPosition().getX2()) / this.getLenght();
+		double c3 = (this.getNode2().getPosition().getX3() - this.getNode1().getPosition().getX3()) / this.getLenght();
+		double coeff = this.getEModulus() * this.getArea() / this.getLenght();
+		
+		IMatrix a = new Array2DMatrix(6, 1);
+		IMatrix c = new Array2DMatrix(2, 1);
+		IMatrix transform = new Array2DMatrix(2, 6);
+		transform.set(0, 0, c1);
+		transform.set(0, 1, c2);
+		transform.set(0, 2, c3);
+		transform.set(1, 3, c1);
+		transform.set(1, 4, c2);
+		transform.set(1, 5, c3);
+		
+		for (int i = 0; i < displacement.length; i++) {
+			a.set(i, 0, displacement[i]);
+		}
+		
+		BLAM.multiply(1.0, BLAM.NO_TRANSPOSE, transform, BLAM.NO_TRANSPOSE, a, 0.0, c);
+		
+		//System.out.println("\nLocal Displacement Vector");
+		//System.out.print(MatrixFormat.format(c));
+		
+		double force = coeff * (c.get(1, 0) - c.get(0, 0));
+		
+		//System.out.println("\nForce");
+		//System.out.print(force);
+		
+		return force;
 	}
 
 }
