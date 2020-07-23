@@ -27,6 +27,8 @@ public class Element {
 		double c3 = (this.getNode2().getPosition().getX3() - this.getNode1().getPosition().getX3()) / this.getLenght();
 		double coeff = this.getEModulus() * this.getArea() / this.getLenght();
 		
+		//System.out.println(ArrayFormat.format(new double[]{c1, c2, c3, coeff}));
+		
 		// initialise matrices
 		IMatrix k_glob = new Array2DMatrix(6, 6);
 		IMatrix k_part = new Array2DMatrix(3, 3);

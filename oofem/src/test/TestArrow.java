@@ -1,6 +1,6 @@
 package test;
 
-import inf.v3d.obj.*;
+import inf.v3d.obj.Arrow;
 import inf.v3d.view.Viewer;
 
 public class TestArrow {

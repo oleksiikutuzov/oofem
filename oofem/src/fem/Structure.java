@@ -5,12 +5,18 @@ import java.util.ArrayList;
 import iceb.jnumerics.Array2DMatrix;
 import iceb.jnumerics.IMatrix;
 import iceb.jnumerics.MatrixFormat;
+import iceb.jnumerics.QuadraticMatrixInfo;
+import iceb.jnumerics.SolveFailedException;
+import iceb.jnumerics.lse.GeneralMatrixLSESolver;
+import iceb.jnumerics.lse.ILSESolver;
 import inf.text.ArrayFormat;
 
 public class Structure {
 
 	private ArrayList<Node> nodes = new ArrayList<Node>();
 	private ArrayList<Element> elements = new ArrayList<Element>();
+	IMatrix kGlobal;
+	double[] rGlobal;
 
 	public Node addNode(double x1, double x2, double x3) {
 		Node node = new Node(x1, x2, x3);
@@ -48,40 +54,81 @@ public class Structure {
 			System.out.println(ArrayFormat.format(i) + MatrixFormat.format(this.getNode(i).getPosition()));
 		}
 
-		
 		System.out.println("\nConstraints");
 		System.out.println(ArrayFormat.iFormat(" node            u1             u2             u3"));
 		for (int i = 0; i < this.getNumberOfNodes(); i++) {
 			if (this.getNode(i).getConstraint() != null) {
-				System.out.println(ArrayFormat.format(i) + ArrayFormat.format(this.getNode(i).getConstraint().getStringArray()));
-				}
+				System.out.println(
+						ArrayFormat.format(i) + ArrayFormat.format(this.getNode(i).getConstraint().getStringArray()));
+			}
 		}
-		
+
 		System.out.println("\nForces");
 		System.out.println(ArrayFormat.iFormat(" node            r1             r2             r3"));
 		for (int i = 0; i < this.getNumberOfNodes(); i++) {
 			if (this.getNode(i).getForce() != null) {
-				System.out.println(ArrayFormat.format(i) + ArrayFormat.format(this.getNode(i).getForce().getComponentArray()));
-				}
+				System.out.println(
+						ArrayFormat.format(i) + ArrayFormat.format(this.getNode(i).getForce().getComponentArray()));
+			}
 		}
-		
+
 		System.out.println("\nElements");
 		System.out.println(ArrayFormat.iFormat("  idx             E              A         length"));
 		for (int i = 0; i < this.getNumberOfElements(); i++) {
-			System.out.println(ArrayFormat.format(i) + ArrayFormat.format(this.getElement(i).getEModulus()) + ArrayFormat.format(this.getElement(i).getArea()) + ArrayFormat.format(this.getElement(i).getLenght()));
+			System.out.println(ArrayFormat.format(i) + ArrayFormat.format(this.getElement(i).getEModulus())
+					+ ArrayFormat.format(this.getElement(i).getArea())
+					+ ArrayFormat.format(this.getElement(i).getLenght()));
 		}
 	}
 
-	public void solve() {	
+	public void solve() {
 		int NEQ = enumerateDOFs();
-		IMatrix kGlobal = new Array2DMatrix(NEQ, NEQ);
-		assembleStiffnessMatrix(kGlobal);
+		kGlobal = new Array2DMatrix(NEQ, NEQ);
+		assembleStiffnessMatrix(NEQ, kGlobal);
+		rGlobal = new double[NEQ];
+		assembleLoadVector(NEQ, rGlobal);
+
+		// create the solver object
+		ILSESolver solver = new GeneralMatrixLSESolver();
+		// info object for coefficient matrix
+		QuadraticMatrixInfo aInfo = solver.getAInfo();
+		// get coefficient matrix
+		IMatrix a = solver.getA();
+		// right hand side
+		double[] b = rGlobal;
+		// initialize solver
+		aInfo.setSize(NEQ);
+		solver.initialize();
 		
-		System.out.println("Assembled global matrix");
+		for (int i = 0; i < NEQ; i++) {
+			for (int j = 0; j < NEQ; j++) {
+				a.set(i, j, this.kGlobal.get(i, j));
+			}
+		}
+
+		// print
+		System.out.println("\nSolving A x = b");
+		System.out.println("Matrix A");
+		System.out.println(MatrixFormat.format(a));
+		System.out.println("Vector b");
+		System.out.println(ArrayFormat.format(b));
+
+		// after calling solve , b contains the solution
+		try {
+			solver.solve(b);
+		} catch (SolveFailedException e) {
+			System.out.println("Solve failed: " + e.getMessage());
+		}
+		
+		// print result 
+		System.out.println("Solution x"); 
+		System.out.println(ArrayFormat.format(b));
+
+		System.out.println("\nAssembled global force matrix");
+		System.out.println(ArrayFormat.format(rGlobal));
+
+		System.out.println("\nAssembled global matrix");
 		System.out.println(MatrixFormat.format(kGlobal));
-		
-		
-		
 	}
 
 	private int enumerateDOFs() {
@@ -95,12 +142,21 @@ public class Structure {
 		return start;
 	}
 
-	private void assembleLoadVector(double[] rGlobal) {
-
+	private void assembleLoadVector(int NEQ, double[] rGlobal) {
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			if (this.getNode(i).getForce() != null) {
+				for (int j = 0; j < NEQ; j++) {
+					for (int k = 0; k < 3; k++) {
+						if (this.getNode(i).getDOFNumbers()[k] == j) {
+							rGlobal[j] = this.getNode(i).getForce().getComponentArray()[k];
+						}
+					}
+				}
+			}
+		}
 	}
 
-	private void assembleStiffnessMatrix(IMatrix kGlobal) {
-		int NEQ = enumerateDOFs();
+	private void assembleStiffnessMatrix(int NEQ, IMatrix kGlobal) {
 		for (int i = 0; i < this.getNumberOfElements(); i++) {
 			for (int j = 0; j < NEQ; j++) {
 				for (int k = 0; k < NEQ; k++) {
@@ -108,15 +164,14 @@ public class Structure {
 						kGlobal.add(j, k, this.getElement(i).computeStiffnessMatrix().get(j, k));
 					}
 				}
-				
+
 			}
 		}
-		
 
 	}
 
 	private void selectDisplacements(double[] uGlobal) {
-		
+
 	}
 
 	public void printResults() {

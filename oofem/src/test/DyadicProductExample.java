@@ -1,6 +1,8 @@
 package test;
 
-import iceb.jnumerics.*;
+import iceb.jnumerics.IMatrix;
+import iceb.jnumerics.MatrixFormat;
+import iceb.jnumerics.Vector3D;
 
 public class DyadicProductExample {
 	
