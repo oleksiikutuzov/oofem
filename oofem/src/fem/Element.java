@@ -1,6 +1,7 @@
 package fem;
 
 import iceb.jnumerics.Array2DMatrix;
+import iceb.jnumerics.BLAM;
 import iceb.jnumerics.IMatrix;
 import inf.text.ArrayFormat;
 
@@ -17,6 +18,39 @@ public class Element {
 		this.eModulus = e;
 		this.node1 = n1;
 		this.node2 = n2;
+	}
+	
+	public IMatrix computeStiffnessMatrix2() {
+		double c1 = (this.getNode2().getPosition().getX1() - this.getNode1().getPosition().getX1()) / this.getLenght();
+		double c2 = (this.getNode2().getPosition().getX2() - this.getNode1().getPosition().getX2()) / this.getLenght();
+		double c3 = (this.getNode2().getPosition().getX3() - this.getNode1().getPosition().getX3()) / this.getLenght();
+		double coeff = this.getEModulus() * this.getArea() / this.getLenght();
+		
+		
+		IMatrix transform = new Array2DMatrix(2, 6);
+		IMatrix k_local = new Array2DMatrix(2, 2);
+		IMatrix tmp = new Array2DMatrix(6, 2);
+		IMatrix k_global = new Array2DMatrix(6, 6);
+
+		// initialize A and B
+		transform.set(0, 0, c1);
+		transform.set(0, 1, c2);
+		transform.set(0, 2, c3);
+		transform.set(1, 3, c1);
+		transform.set(1, 4, c2);
+		transform.set(1, 5, c3);
+
+		k_local.set(0, 0, coeff * 1);
+		k_local.set(0, 1, coeff * -1);
+		k_local.set(1, 0, coeff * -1);
+		k_local.set(1, 1, coeff * 1);
+
+		// compute 
+		BLAM.multiply(1.0, BLAM.TRANSPOSE, transform, BLAM.NO_TRANSPOSE, k_local, 0.0, tmp);
+		BLAM.multiply(1.0, BLAM.NO_TRANSPOSE, tmp, BLAM.NO_TRANSPOSE, transform, 0.0, k_global);
+		
+		return k_global;
+		
 	}
 
 	public IMatrix computeStiffnessMatrix() {
@@ -60,7 +94,7 @@ public class Element {
 			this.dofNumbers[i] = this.node1.getDOFNumbers()[i];
 			this.dofNumbers[i + 3] = this.node2.getDOFNumbers()[i];
 		}
-
+		System.out.println(ArrayFormat.format(this.getDOFNumbers()));
 	}
 
 	public int[] getDOFNumbers() {

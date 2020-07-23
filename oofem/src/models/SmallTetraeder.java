@@ -37,9 +37,9 @@ public class SmallTetraeder {
 		struct.addElement(e, a, 0, 1);
 		struct.addElement(e, a, 0, 2);
 		struct.addElement(e, a, 0, 3);
-		struct.addElement(e, a, 1, 2);
-		struct.addElement(e, a, 2, 3);
-		struct.addElement(e, a, 1, 3);
+		struct.addElement(e, a, 2, 1);
+		struct.addElement(e, a, 3, 2);
+		struct.addElement(e, a, 3, 1);
 		
 		//struct.printStructure();
 		// return the new structure

@@ -17,6 +17,7 @@ public class Structure {
 	private ArrayList<Element> elements = new ArrayList<Element>();
 	IMatrix kGlobal;
 	double[] rGlobal;
+	double[] uGlobal;
 
 	public Node addNode(double x1, double x2, double x3) {
 		Node node = new Node(x1, x2, x3);
@@ -99,7 +100,7 @@ public class Structure {
 		// initialize solver
 		aInfo.setSize(NEQ);
 		solver.initialize();
-		
+
 		for (int i = 0; i < NEQ; i++) {
 			for (int j = 0; j < NEQ; j++) {
 				a.set(i, j, this.kGlobal.get(i, j));
@@ -119,16 +120,22 @@ public class Structure {
 		} catch (SolveFailedException e) {
 			System.out.println("Solve failed: " + e.getMessage());
 		}
-		
-		// print result 
-		System.out.println("Solution x"); 
+
+		// print result
+		System.out.println("Solution x");
 		System.out.println(ArrayFormat.format(b));
 
-		System.out.println("\nAssembled global force matrix");
-		System.out.println(ArrayFormat.format(rGlobal));
+		this.uGlobal = b;
+		selectDisplacements(NEQ, this.uGlobal);
+		
+		printStructure();
+		printResults();
 
-		System.out.println("\nAssembled global matrix");
-		System.out.println(MatrixFormat.format(kGlobal));
+		// System.out.println("\nAssembled global force matrix");
+		// System.out.println(ArrayFormat.format(rGlobal));
+
+		// System.out.println("\nAssembled global matrix");
+		// System.out.println(MatrixFormat.format(kGlobal));
 	}
 
 	private int enumerateDOFs() {
@@ -161,7 +168,8 @@ public class Structure {
 			for (int j = 0; j < NEQ; j++) {
 				for (int k = 0; k < NEQ; k++) {
 					if (this.getElement(i).getDOFNumbers()[j] != -1 && this.getElement(i).getDOFNumbers()[k] != -1) {
-						kGlobal.add(j, k, this.getElement(i).computeStiffnessMatrix().get(j, k));
+						kGlobal.add(this.getElement(i).getDOFNumbers()[j], this.getElement(i).getDOFNumbers()[k],
+								this.getElement(i).computeStiffnessMatrix().get(j, k));
 					}
 				}
 
@@ -170,11 +178,34 @@ public class Structure {
 
 	}
 
-	private void selectDisplacements(double[] uGlobal) {
+	private void selectDisplacements(int NEQ, double[] uGlobal) {
+		double[] disp = new double[3];
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			for (int k = 0; k < 3; k++) {
+				for (int j = 0; j < NEQ; j++) {
 
+					if (this.getNode(i).getDOFNumbers()[k] == j) {
+						disp[k] = this.uGlobal[j];
+					} else if (this.getNode(i).getDOFNumbers()[k] == -1) {
+						disp[k] = 0;
+					}
+				}
+			}
+			this.getNode(i).setDisplacement(disp);
+			System.out.println(ArrayFormat.format(this.getNode(i).getDOFNumbers()));
+			System.out.println(MatrixFormat.format(this.getNode(i).getDisplacement()));
+		}
 	}
 
 	public void printResults() {
-
+		System.out.println("Listing analysis results");
+		System.out.println("\nDisplacements");
+		System.out.println(ArrayFormat.iFormat(" node            u1             u2             u3"));
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			if (this.getNode(i).getDisplacement() != null) {
+				System.out.println(
+						ArrayFormat.format(i) + MatrixFormat.format(this.getNode(i).getDisplacement()));
+			}
+		}
 	}
 }
