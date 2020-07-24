@@ -1,4 +1,9 @@
-package test;
+package models;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import fem.CSVReader;
 import fem.Structure;
@@ -7,14 +12,20 @@ import inf.v3d.view.Viewer;
 
 public class StructureFromFile {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		Viewer viewer = new Viewer();
 		CSVReader reader = new CSVReader();
 		reader.setPath("C:\\testFolder/SmallTetraeder.csv");
 		Structure struct = reader.getValues();
-		struct.printStructure();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+		Date date = new Date();
+		System.out.println(df.format(date));
+		struct.setWritePath("C:\\testFolder/SmallTetraeder_solution_" + df.format(date) + ".txt");
 		struct.solve();
+		struct.printStructure();
+		struct.printResults();
+		//struct.writeToFile();
 		
 		Visualizer viz = new Visualizer(struct, viewer);
 		viz.drawElements();
@@ -29,9 +40,6 @@ public class StructureFromFile {
 //		viz.drawElementForces();
 		viewer.setVisible(true);
 		
-		
-		
-
 	}
 
 }

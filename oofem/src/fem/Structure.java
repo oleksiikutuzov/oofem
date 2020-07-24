@@ -1,5 +1,7 @@
 package fem;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import iceb.jnumerics.Array2DMatrix;
@@ -18,6 +20,7 @@ public class Structure {
 	private IMatrix kGlobal;
 	private double[] rGlobal;
 	private double[] uGlobal;
+	private String writePath;
 
 	public Node addNode(double x1, double x2, double x3) {
 		Node node = new Node(x1, x2, x3);
@@ -81,6 +84,60 @@ public class Structure {
 					+ ArrayFormat.format(this.getElement(i).getLenght()));
 		}
 	}
+	
+	public void writeToFile() throws FileNotFoundException {
+		
+		PrintWriter writer = new PrintWriter(writePath);
+		
+		writer.println("Listing structure\n");
+		writer.println("Nodes");
+		writer.println(ArrayFormat.iFormat("  idx            x1             x2             x3"));
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			writer.println(ArrayFormat.format(i) + MatrixFormat.format(this.getNode(i).getPosition()));
+		}
+
+		writer.println("\nConstraints");
+		writer.println(ArrayFormat.iFormat(" node            u1             u2             u3"));
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			if (this.getNode(i).getConstraint() != null) {
+				writer.println(
+						ArrayFormat.format(i) + " " + ArrayFormat.format(this.getNode(i).getConstraint().getStringArray()));
+			}
+		}
+
+		writer.println("\nForces");
+		writer.println(ArrayFormat.iFormat(" node            r1             r2             r3"));
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			if (this.getNode(i).getForce() != null) {
+				writer.println(
+						ArrayFormat.format(i) + ArrayFormat.format(this.getNode(i).getForce().getComponentArray()));
+			}
+		}
+
+		writer.println("\nElements");
+		writer.println(ArrayFormat.iFormat("  idx             E              A         length"));
+		for (int i = 0; i < this.getNumberOfElements(); i++) {
+			writer.println(ArrayFormat.format(i) + ArrayFormat.format(this.getElement(i).getEModulus())
+					+ ArrayFormat.format(this.getElement(i).getArea())
+					+ ArrayFormat.format(this.getElement(i).getLenght()));
+		}
+		
+		writer.println("\nListing analysis results");
+		writer.println("\nDisplacements");
+		writer.println(ArrayFormat.iFormat(" node            u1             u2             u3"));
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			if (this.getNode(i).getDisplacement() != null) {
+				writer.println(ArrayFormat.format(i) + MatrixFormat.format(this.getNode(i).getDisplacement()));
+			}
+		}
+		writer.println("\nElement forces");
+		writer.println(ArrayFormat.iFormat(" elem         force"));
+		for (int i = 0; i < this.getNumberOfElements(); i++) {
+			writer.println(ArrayFormat.format(i) + ArrayFormat.format(this.getElement(i).computeForce()));
+		}
+		
+		writer.close();
+	}
 
 	public void solve() {
 		int NEQ = enumerateDOFs();
@@ -135,8 +192,8 @@ public class Structure {
 		// System.out.println("\nAssembled global force matrix");
 		// System.out.println(ArrayFormat.format(rGlobal));
 
-		System.out.println("\nAssembled global matrix");
-		System.out.println(MatrixFormat.format(kGlobal));
+		//System.out.println("\nAssembled global matrix");
+		//System.out.println(MatrixFormat.format(kGlobal));
 	}
 
 	private int enumerateDOFs() {
@@ -164,22 +221,6 @@ public class Structure {
 		}
 	}
 
-//	private void assembleStiffnessMatrix(int NEQ, IMatrix kGlobal) {
-//		for (int i = 0; i < this.getNumberOfElements(); i++) {
-//			for (int j = 0; j < NEQ; j++) {
-//				for (int k = 0; k < NEQ; k++) {
-//					if (this.getElement(i).getDOFNumbers()[j] != -1 && this.getElement(i).getDOFNumbers()[k] != -1) {
-//						kGlobal.add(this.getElement(i).getDOFNumbers()[j], this.getElement(i).getDOFNumbers()[k],
-//								this.getElement(i).computeStiffnessMatrix2().get(j,k));
-//					} 
-//				}
-//
-//			}
-//			//System.out.println(MatrixFormat.format(this.getElement(i).computeStiffnessMatrix()));
-//		}
-//
-//	}
-
 	private void assembleStiffnessMatrix(IMatrix kGlobal) {
 		for (int i = 0; i < this.getNumberOfElements(); i++) {
 			for (int j = 0; j < 6; j++) {
@@ -193,8 +234,8 @@ public class Structure {
 					}
 				}
 			}
-			System.out.println("\nMatrix for element " + i);
-			System.out.println(MatrixFormat.format(this.getElement(i).computeStiffnessMatrix()));
+			//System.out.println("\nMatrix for element " + i);
+			//System.out.println(MatrixFormat.format(this.getElement(i).computeStiffnessMatrix()));
 		}
 	}
 
@@ -230,7 +271,9 @@ public class Structure {
 		for (int i = 0; i < this.getNumberOfElements(); i++) {
 			System.out.println(ArrayFormat.format(i) + ArrayFormat.format(this.getElement(i).computeForce()));
 		}
+		
 	}
+	
 
 	public double[] getUGlobal() {
 		return this.uGlobal;
@@ -240,5 +283,9 @@ public class Structure {
 		for (int i = 0; i < this.getNumberOfElements(); i++) {
 			this.getElement(i).computeForce();
 		}
+	}
+	
+	public void setWritePath(String s) {
+		this.writePath = s;
 	}
 }

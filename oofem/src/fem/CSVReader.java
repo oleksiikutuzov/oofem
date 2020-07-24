@@ -52,8 +52,8 @@ public class CSVReader {
 					// System.out.println(ArrayFormat.format(values));
 					this.struct.addNode(Double.parseDouble(nodeValues[1]), Double.parseDouble(nodeValues[2]),
 							Double.parseDouble(nodeValues[3]));
-					System.out.println("Node " + nodeValues[0] + " position is set to   " + ArrayFormat
-							.format(this.struct.getNode(Integer.parseInt(nodeValues[0])).getPosition().toArray()));
+					//System.out.println("Node " + nodeValues[0] + " position is set to   " + ArrayFormat
+					//		.format(this.struct.getNode(Integer.parseInt(nodeValues[0])).getPosition().toArray()));
 					// System.out.print(
 					// ArrayFormat.format(struct.getNode(Integer.parseInt(values[0])).getPosition().toArray())
 					// + "\n");
@@ -84,9 +84,9 @@ public class CSVReader {
 					//System.out.println("c vector: " + ArrayFormat.format(c));
 					this.struct.getNode(Integer.parseInt(constraintValues[0]))
 							.setConstraint(new Constraint(c[0], c[1], c[2]));
-					System.out.println(
-							"Node " + constraintValues[0] + " constraint is set to  " + ArrayFormat.format(this.struct
-									.getNode(Integer.parseInt(constraintValues[0])).getConstraint().getStringArray()));
+//					System.out.println(
+//							"Node " + constraintValues[0] + " constraint is set to  " + ArrayFormat.format(this.struct
+//									.getNode(Integer.parseInt(constraintValues[0])).getConstraint().getStringArray()));
 				}
 				
 				// search for Constraints part
@@ -109,9 +109,9 @@ public class CSVReader {
 					}
 					//System.out.println("c vector: " + ArrayFormat.format(c));
 					this.struct.getNode(Integer.parseInt(forceValues[0])).setForce(new Force(c[0], c[1], c[2]));
-					System.out.println(
-							"Node " + forceValues[0] + " force is set to      " + ArrayFormat.format(this.struct
-									.getNode(Integer.parseInt(forceValues[0])).getForce().getComponentArray()));
+//					System.out.println(
+//							"Node " + forceValues[0] + " force is set to      " + ArrayFormat.format(this.struct
+//									.getNode(Integer.parseInt(forceValues[0])).getForce().getComponentArray()));
 				}
 				
 				// search for Elements part
@@ -128,9 +128,9 @@ public class CSVReader {
 						continue;
 					}
 					this.struct.addElement(Double.parseDouble(elementValues[1]), Double.parseDouble(elementValues[2]), Integer.parseInt(elementValues[3]), Integer.parseInt(elementValues[4]));
-					System.out.println(
-							"Element " + elementValues[0] + " force is set for nodes " + elementValues[3] + " and " + elementValues[4]);
-					System.out.println("Element " + elementValues[0] + ": E = " + elementValues[1] + ", A = " + elementValues[2]);
+//					System.out.println(
+//							"Element " + elementValues[0] + " force is set for nodes " + elementValues[3] + " and " + elementValues[4]);
+//					System.out.println("Element " + elementValues[0] + ": E = " + elementValues[1] + ", A = " + elementValues[2]);
 				}
 
 			}
