@@ -186,8 +186,8 @@ public class Structure {
 		applyDisplacements(NEQ, this.uGlobal);
 		computeForces();
 
-		printStructure();
-		printResults();
+		//printStructure();
+		//printResults();
 
 		// System.out.println("\nAssembled global force matrix");
 		// System.out.println(ArrayFormat.format(rGlobal));
