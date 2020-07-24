@@ -3,6 +3,7 @@ package fem;
 import iceb.jnumerics.Array2DMatrix;
 import iceb.jnumerics.BLAM;
 import iceb.jnumerics.IMatrix;
+import iceb.jnumerics.MatrixFormat;
 import inf.text.ArrayFormat;
 
 public class Element {

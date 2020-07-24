@@ -85,7 +85,7 @@ public class Structure {
 	public void solve() {
 		int NEQ = enumerateDOFs();
 		kGlobal = new Array2DMatrix(NEQ, NEQ);
-		this.assembleStiffnessMatrix2(kGlobal);
+		this.assembleStiffnessMatrix(kGlobal);
 		rGlobal = new double[NEQ];
 		assembleLoadVector(NEQ, rGlobal);
 
@@ -135,8 +135,8 @@ public class Structure {
 		// System.out.println("\nAssembled global force matrix");
 		// System.out.println(ArrayFormat.format(rGlobal));
 
-		// System.out.println("\nAssembled global matrix");
-		// System.out.println(MatrixFormat.format(kGlobal));
+		System.out.println("\nAssembled global matrix");
+		System.out.println(MatrixFormat.format(kGlobal));
 	}
 
 	private int enumerateDOFs() {
@@ -180,7 +180,7 @@ public class Structure {
 //
 //	}
 
-	private void assembleStiffnessMatrix2(IMatrix kGlobal) {
+	private void assembleStiffnessMatrix(IMatrix kGlobal) {
 		for (int i = 0; i < this.getNumberOfElements(); i++) {
 			for (int j = 0; j < 6; j++) {
 				int n = this.getElement(i).getDOFNumbers()[j];
@@ -193,6 +193,8 @@ public class Structure {
 					}
 				}
 			}
+			System.out.println("\nMatrix for element " + i);
+			System.out.println(MatrixFormat.format(this.getElement(i).computeStiffnessMatrix()));
 		}
 	}
 

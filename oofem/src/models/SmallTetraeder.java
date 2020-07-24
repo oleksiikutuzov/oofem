@@ -56,12 +56,12 @@ public class SmallTetraeder {
 		viz.drawConstraints();
 		viz.setForceSymbolScale(0.000025);
 		viz.setForceSymbolRadius(0.1);
-		viz.drawElementForces();
+		viz.drawForces();
 		viz.setDisplacementScale(3e3);
 		viz.drawDisplacements();
 		viz.setForceScale(1e-7); 
-//		viz.drawForces();
-		viewer.setVisible(true);
+//		viz.drawElementForces();
+		viewer.setVisible(false);
 		
 	}
 }

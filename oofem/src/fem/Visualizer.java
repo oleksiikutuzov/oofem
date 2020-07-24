@@ -69,7 +69,7 @@ public class Visualizer {
 		}
 	}
 
-	public void drawElementForces() {
+	public void drawForces() {
 		for (int i = 0; i < this.structure.getNumberOfNodes(); i++) {
 			if (this.structure.getNode(i).getForce() != null) {
 				Arrow arrow = new Arrow();
@@ -136,7 +136,7 @@ public class Visualizer {
 		this.viewer.addObject3D(cs);
 	}
 
-	public void drawForces() {
+	public void drawElementForces() {
 		PolygonSet ps = new PolygonSet();
 		for (int i = 0; i < this.structure.getNumberOfElements(); i++) {
 			Vector3D d_num = (this.structure.getElement(i).getNode2().getPosition()
