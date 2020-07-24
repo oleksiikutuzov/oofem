@@ -129,7 +129,7 @@ public class Structure {
 		applyDisplacements(NEQ, this.uGlobal);
 		computeForces();
 		
-		//printStructure();
+		printStructure();
 		printResults();
 		
 

@@ -1,5 +1,6 @@
 package fem;
 
+import iceb.jnumerics.Vector3D;
 import inf.text.ArrayFormat;
 
 public class Force {
@@ -22,6 +23,10 @@ public class Force {
 
 	public void print() {
 		System.out.println(ArrayFormat.format(this.components));
+	}
+	
+	public Vector3D toVector3D() {
+		return new Vector3D(this.components);
 	}
 
 }
