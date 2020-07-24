@@ -59,8 +59,8 @@ public class SmallTetraeder {
 		viz.drawElementForces();
 		viz.setDisplacementScale(3e3);
 		viz.drawDisplacements();
-		viz.setForceScale(1e-6); 
-		viz.drawForces();
+		viz.setForceScale(1e-7); 
+//		viz.drawForces();
 		viewer.setVisible(true);
 		
 	}

@@ -74,7 +74,7 @@ public class Visualizer {
 			if (this.structure.getNode(i).getForce() != null) {
 				Arrow arrow = new Arrow();
 				Vector3D point1 = new Vector3D(
-						this.structure.getNode(i).getPosition().getX1()
+						this.structure.getNode(i).getPosition().toArray()[0]
 								+ this.structure.getNode(i).getForce().getComponent(0) * this.arrowShaftScale * -1,
 						this.structure.getNode(i).getPosition().getX2()
 								+ this.structure.getNode(i).getForce().getComponent(1) * this.arrowShaftScale * -1,

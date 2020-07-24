@@ -11,12 +11,12 @@ public class ParseFile {
 		File file = new File("C:\\testFolder/SmallTetraeder.txt");
 		Scanner scan = new Scanner(file);
 		int line = 0;
-		String lineText = "";
+		String lineText = new String();
 		
 		do {
 			lineText = scan.nextLine();
 			line++;
-		} while (lineText == "Nodes");
+		} while (lineText != "Nodes");
 		
 		System.out.println("Word 'Nodes' is on line " + line);
 		
