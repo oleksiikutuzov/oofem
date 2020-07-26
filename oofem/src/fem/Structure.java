@@ -165,11 +165,11 @@ public class Structure {
 		}
 
 		// print
-		//System.out.println("\nSolving A x = b");
-		//System.out.println("Matrix A");
-		//System.out.println(MatrixFormat.format(a));
-		// System.out.println("Vector b");
-		// System.out.println(ArrayFormat.format(b));
+		System.out.println("\nSolving A x = b");
+		System.out.println("Matrix A");
+		System.out.println(MatrixFormat.format(a));
+		System.out.println("Vector b");
+		System.out.println(ArrayFormat.format(b));
 
 		// after calling solve , b contains the solution
 		try {
@@ -179,8 +179,8 @@ public class Structure {
 		}
 
 		// print result
-		// System.out.println("Solution x");
-		// System.out.println(ArrayFormat.format(b));
+		System.out.println("Solution x");
+		System.out.println(ArrayFormat.format(b));
 
 		this.uGlobal = b;
 		applyDisplacements(NEQ, this.uGlobal);
@@ -234,8 +234,8 @@ public class Structure {
 					}
 				}
 			}
-			//System.out.println("\nMatrix for element " + i);
-			//System.out.println(MatrixFormat.format(this.getElement(i).computeStiffnessMatrix()));
+			System.out.println("\nMatrix for element " + i);
+			System.out.println(MatrixFormat.format(this.getElement(i).computeStiffnessMatrix()));
 		}
 	}
 

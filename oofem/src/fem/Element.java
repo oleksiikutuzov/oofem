@@ -3,6 +3,7 @@ package fem;
 import iceb.jnumerics.Array2DMatrix;
 import iceb.jnumerics.BLAM;
 import iceb.jnumerics.IMatrix;
+import iceb.jnumerics.MatrixFormat;
 import inf.text.ArrayFormat;
 
 public class Element {
@@ -48,6 +49,8 @@ public class Element {
 		// compute 
 		BLAM.multiply(1.0, BLAM.TRANSPOSE, transform, BLAM.NO_TRANSPOSE, k_local, 0.0, tmp);
 		BLAM.multiply(1.0, BLAM.NO_TRANSPOSE, tmp, BLAM.NO_TRANSPOSE, transform, 0.0, k_global);
+		
+		//System.out.println(MatrixFormat.format(k_global));
 		
 		return k_global;
 		

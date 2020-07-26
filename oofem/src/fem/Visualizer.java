@@ -12,6 +12,7 @@ import inf.v3d.view.Viewer;
 public class Visualizer {
 
 	private double displacementScale = 1;
+	private double radiusScale = 1;
 	private double constraintScale = 1;
 	private double arrowRadiusScale = 1;
 	private double arrowShaftScale = 1e-5;
@@ -30,7 +31,7 @@ public class Visualizer {
 		for (int i = 0; i < this.getStructure().getNumberOfElements(); i++) {
 			cs.addCylinder(this.getStructure().getElement(i).getNode1().getPosition().toArray(),
 					this.getStructure().getElement(i).getNode2().getPosition().toArray(),
-					Math.sqrt(this.getStructure().getElement(i).getArea() / Math.PI));
+					Math.sqrt(this.getStructure().getElement(i).getArea() / Math.PI)*this.radiusScale);
 		}
 		this.getViewer().addObject3D(cs);
 	}
@@ -148,7 +149,7 @@ public class Visualizer {
 			Vector3D d = d_num.multiply(d_den);
 
 			Vector3D p = d.vectorProduct(node2);
-			double mag = Math.signum(this.getStructure().getElement(i).computeForce());
+			double mag = (this.getStructure().getElement(i).computeForce());
 			
 			ps.insertVertex(node1.toArray(), mag);
 			ps.insertVertex(node2.toArray(), mag);
@@ -185,6 +186,10 @@ public class Visualizer {
 
 	public void setStructure(Structure structure) {
 		this.structure = structure;
+	}
+
+	public void setRadiusScale(double radiusScale) {
+		this.radiusScale = radiusScale;
 	}
 
 }
