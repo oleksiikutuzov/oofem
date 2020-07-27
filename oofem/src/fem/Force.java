@@ -16,7 +16,7 @@ public class Force {
 	public double getComponent(int c) {
 		return this.components[c];
 	}
-	
+
 	public double[] getComponentArray() {
 		return this.components;
 	}
@@ -24,9 +24,8 @@ public class Force {
 	public void print() {
 		System.out.println(ArrayFormat.format(this.components));
 	}
-	
+
 	public Vector3D toVector3D() {
 		return new Vector3D(this.components);
 	}
-
 }

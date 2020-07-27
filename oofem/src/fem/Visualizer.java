@@ -16,9 +16,9 @@ public class Visualizer {
 	private double constraintScale = 1;
 	private double arrowRadiusScale = 1;
 	private double arrowShaftScale = 1e-5;
+	private double elementForceScale = 2e-6;
 	private Structure structure;
 	private Viewer viewer;
-	private double elementForceScale = 2e-6;
 
 	public Visualizer(Structure struct, Viewer viewer) {
 		this.setStructure(struct);
@@ -31,7 +31,7 @@ public class Visualizer {
 		for (int i = 0; i < this.getStructure().getNumberOfElements(); i++) {
 			cs.addCylinder(this.getStructure().getElement(i).getNode1().getPosition().toArray(),
 					this.getStructure().getElement(i).getNode2().getPosition().toArray(),
-					Math.sqrt(this.getStructure().getElement(i).getArea() / Math.PI)*this.radiusScale);
+					Math.sqrt(this.getStructure().getElement(i).getArea() / Math.PI) * this.radiusScale);
 		}
 		this.getViewer().addObject3D(cs);
 	}
@@ -150,7 +150,7 @@ public class Visualizer {
 
 			Vector3D p = d.vectorProduct(node2);
 			double mag = (this.getStructure().getElement(i).computeForce());
-			
+
 			ps.insertVertex(node1.toArray(), mag);
 			ps.insertVertex(node2.toArray(), mag);
 			ps.insertVertex(node2
@@ -160,7 +160,6 @@ public class Visualizer {
 					.add(p.multiply(this.elementForceScale).multiply(this.getStructure().getElement(i).computeForce()))
 					.toArray(), mag);
 			ps.polygonComplete();
-
 
 		}
 		ps.setColoringByData(true);
@@ -190,6 +189,15 @@ public class Visualizer {
 
 	public void setRadiusScale(double radiusScale) {
 		this.radiusScale = radiusScale;
+	}
+
+	public void transferScalesValues() {
+		this.radiusScale = this.getStructure().getViewerScales()[0];
+		this.constraintScale = this.getStructure().getViewerScales()[1];
+		this.arrowShaftScale = this.getStructure().getViewerScales()[2];
+		this.arrowRadiusScale = this.getStructure().getViewerScales()[3];
+		this.displacementScale = this.getStructure().getViewerScales()[4];
+		this.elementForceScale = this.getStructure().getViewerScales()[5];
 	}
 
 }

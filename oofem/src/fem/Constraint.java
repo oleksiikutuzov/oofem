@@ -1,6 +1,5 @@
 package fem;
 
-
 import inf.text.ArrayFormat;
 
 public class Constraint {
@@ -16,7 +15,7 @@ public class Constraint {
 	public boolean isFree(int c) {
 		return this.free[c];
 	}
-	
+
 	public String[] getStringArray() {
 		String[] string = new String[this.free.length];
 		for (int i = 0; i < this.free.length; i++) {
@@ -32,5 +31,4 @@ public class Constraint {
 	public void print() {
 		System.out.println(ArrayFormat.format(this.getStringArray()));
 	}
-
 }

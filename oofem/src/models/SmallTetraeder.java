@@ -25,14 +25,13 @@ public class SmallTetraeder {
 		Node n2 = struct.addNode(0.0, lb / Math.sqrt(3), 0);
 		Node n3 = struct.addNode(-lb / 2, -lb / Math.sqrt(12.0), 0);
 		Node n4 = struct.addNode(lb / 2, -lb / Math.sqrt(12.0), 0);
-		
-		
+
 		// apply BCs
 		n1.setForce(f1);
 		n2.setConstraint(c1);
 		n3.setConstraint(c1);
 		n4.setConstraint(c2);
-	
+
 		// create elements
 		struct.addElement(e, a, 0, 1);
 		struct.addElement(e, a, 0, 2);
@@ -40,8 +39,8 @@ public class SmallTetraeder {
 		struct.addElement(e, a, 1, 2);
 		struct.addElement(e, a, 2, 3);
 		struct.addElement(e, a, 3, 1);
-		
-		//struct.printStructure();
+
+		// struct.printStructure();
 		// return the new structure
 		return struct;
 	}
@@ -59,9 +58,9 @@ public class SmallTetraeder {
 		viz.drawForces();
 		viz.setDisplacementScale(3e3);
 		viz.drawDisplacements();
-		viz.setElementForceScale(1e-7); 
+		viz.setElementForceScale(1e-7);
 //		viz.drawElementForces();
 		viewer.setVisible(false);
-		
+
 	}
 }

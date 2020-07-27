@@ -14,64 +14,75 @@ public class CSVReader {
 	private boolean addConstraints = false;
 	private boolean addForces = false;
 	private boolean addElements = false;
+	private boolean addVisual = false;
 
+	// set path for file with model
 	public void setPath(String s) {
 		this.path = s;
 	}
 
+	// get values from file and return Structure object
 	public Structure getValues() {
 		try {
-
+			// initialize Structure object
 			this.struct = new Structure();
+			// initialize BufferedReader
 			BufferedReader br = new BufferedReader(new FileReader(path));
 
+			// BufferedReader going through all lines until end of file
 			while ((line = br.readLine()) != null) {
 
-				//System.out.println(line);
-
-				if (line.contains("id") || line.contains("node")) {
+				// skip lines with headers of tables
+				if (line.contains("id") || line.contains("node") || line.contains("Radius")) {
+					// skip this line
 					continue;
 				}
 
-				// search for Nodes part
+				// search for Nodes table
 				if (line.contains("Node")) {
+					// set flag to add Node values
 					addNodes = true;
+					// skip next line
 					continue;
 				}
 
-				if (addNodes == true)	{
-
-					// get node values
+				// get node values
+				if (addNodes == true) {
+					// split line by commas
 					String[] nodeValues = line.split(",");
+					// check if line has no elements
 					if (line.contains(",,,")) {
+						// remove flag
 						addNodes = false;
+						// skip next line
 						continue;
 					}
-
-					// System.out.println(ArrayFormat.format(values));
+					// add Node with values from table
 					this.struct.addNode(Double.parseDouble(nodeValues[1]), Double.parseDouble(nodeValues[2]),
 							Double.parseDouble(nodeValues[3]));
-					//System.out.println("Node " + nodeValues[0] + " position is set to   " + ArrayFormat
-					//		.format(this.struct.getNode(Integer.parseInt(nodeValues[0])).getPosition().toArray()));
-					// System.out.print(
-					// ArrayFormat.format(struct.getNode(Integer.parseInt(values[0])).getPosition().toArray())
-					// + "\n");
-					}
+				}
 
-				// search for Constraints part
+				// search for Constraints table
 				if (line.contains("Constraints")) {
+					// set flag to add Constraints values
 					addConstraints = true;
+					// skip next line
 					continue;
 				}
 
+				// get constraint values
 				if (addConstraints == true) {
-					// get constraint values
+					// split line by commas
 					String[] constraintValues = line.split(",");
+					// check if line has no elements
 					if (line.contains(",,,")) {
+						// remove flag
 						addConstraints = false;
+						// skip next line
 						continue;
 					}
-					//System.out.println(ArrayFormat.format(constraintValues));
+
+					// create an array of boolean values with constraints values
 					boolean[] c = new boolean[3];
 					for (int i = 1; i < 4; i++) {
 						if (constraintValues[i].contains("fixed")) {
@@ -80,63 +91,94 @@ public class CSVReader {
 							c[i - 1] = true;
 						}
 					}
-					//System.out.println("c vector: " + ArrayFormat.format(c));
+					// set Constraint to Node
 					this.struct.getNode(Integer.parseInt(constraintValues[0]))
 							.setConstraint(new Constraint(c[0], c[1], c[2]));
-//					System.out.println(
-//							"Node " + constraintValues[0] + " constraint is set to  " + ArrayFormat.format(this.struct
-//									.getNode(Integer.parseInt(constraintValues[0])).getConstraint().getStringArray()));
 				}
-				
-				// search for Constraints part
+
+				// search for Forces table
 				if (line.contains("Forces")) {
+					// set flag to add Forces values
 					addForces = true;
+					// skip next line
 					continue;
 				}
 
+				// get force values
 				if (addForces == true) {
-					// get force values
+					// split line by commas
 					String[] forceValues = line.split(",");
+					// check if line has no elements
 					if (line.contains(",,,")) {
+						// remove flag
 						addForces = false;
+						// skip next line
 						continue;
 					}
-					//System.out.println(ArrayFormat.format(constraintValues));
+					// create an array with forces values
 					double[] c = new double[3];
 					for (int i = 0; i < 3; i++) {
-						c[i] =  Double.parseDouble(forceValues[i+1]);
+						c[i] = Double.parseDouble(forceValues[i + 1]);
 					}
-					//System.out.println("c vector: " + ArrayFormat.format(c));
+					// set Force values to Node
 					this.struct.getNode(Integer.parseInt(forceValues[0])).setForce(new Force(c[0], c[1], c[2]));
-//					System.out.println(
-//							"Node " + forceValues[0] + " force is set to      " + ArrayFormat.format(this.struct
-//									.getNode(Integer.parseInt(forceValues[0])).getForce().getComponentArray()));
 				}
-				
-				// search for Elements part
+
+				// search for Elements table
 				if (line.contains("Elements")) {
+					// set flag to add Elements values
 					addElements = true;
+					// skip next line
 					continue;
 				}
 
+				// get Elements values
 				if (addElements == true) {
-					// get force values
+					// split line by commas
 					String[] elementValues = line.split(",");
+					// check if line has no elements
 					if (line.contains(",,,")) {
+						// remove flag
 						addElements = false;
+						// skip next line
 						continue;
 					}
-					this.struct.addElement(Double.parseDouble(elementValues[1]), Double.parseDouble(elementValues[2]), Integer.parseInt(elementValues[3]), Integer.parseInt(elementValues[4]));
-//					System.out.println(
-//							"Element " + elementValues[0] + " force is set for nodes " + elementValues[3] + " and " + elementValues[4]);
-//					System.out.println("Element " + elementValues[0] + ": E = " + elementValues[1] + ", A = " + elementValues[2]);
+					// add an Element to the Structure
+					this.struct.addElement(Double.parseDouble(elementValues[1]), Double.parseDouble(elementValues[2]),
+							Integer.parseInt(elementValues[3]), Integer.parseInt(elementValues[4]));
 				}
 
-			}
-			br.close();
-		}
+				// search for Visual table
+				if (line.contains("Visual")) {
+					// set flag to add Forces values
+					addVisual = true;
+					// skip next line
+					continue;
+				}
 
-		catch (FileNotFoundException e) {
+				// get scales for Visualizer
+				if (addVisual == true) {
+					// split line by commas
+					String[] visualValues = line.split(",");
+					// check if line has no elements
+					if (line.contains(",,,")) {
+						// remove flag
+						addVisual = false;
+						// skip next line
+						continue;
+					}
+					// create an array with Scales values
+					double[] viewerScales = new double[6];
+					for (int i = 0; i < viewerScales.length; i++) {
+						viewerScales[i] = Double.parseDouble(visualValues[i]);
+					}
+					// set Scales values to the Structure
+					this.struct.setViewerScales(viewerScales);
+				}
+			}
+			// close BufferedReader
+			br.close();
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
