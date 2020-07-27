@@ -17,6 +17,9 @@ public class Structure {
 
 	private ArrayList<Node> nodes = new ArrayList<Node>();
 	private ArrayList<Element> elements = new ArrayList<Element>();
+	private ArrayList<Element> allelements = new ArrayList<Element>();
+	private ArrayList<Node> meshedNodes = new ArrayList<Node>();
+	private ArrayList<Node> allNodes = new ArrayList<Node>();
 	private IMatrix kGlobal;
 	private double[] rGlobal;
 	private double[] uGlobal;
@@ -184,13 +187,13 @@ public class Structure {
 		applyDisplacements(NEQ, this.uGlobal);
 		computeForces();
 
-		/*
-		 * System.out.println("\nAssembled global force matrix");
-		 * System.out.println(ArrayFormat.format(rGlobal));
-		 * 
-		 * System.out.println("\nAssembled global matrix");
-		 * System.out.println(MatrixFormat.format(kGlobal));
-		 */
+		
+		  System.out.println("\nAssembled global force matrix");
+		  System.out.println(ArrayFormat.format(rGlobal));
+		  
+		  System.out.println("\nAssembled global matrix");
+		  System.out.println(MatrixFormat.format(kGlobal));
+		 
 	}
 
 //	count degrees of freedom
@@ -322,4 +325,6 @@ public class Structure {
 	public void setViewerScales(double[] viewerScales) {
 		this.viewerScales = viewerScales;
 	}
+	
+	
 }

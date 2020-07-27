@@ -7,6 +7,7 @@ import inf.v3d.obj.Arrow;
 import inf.v3d.obj.Cone;
 import inf.v3d.obj.CylinderSet;
 import inf.v3d.obj.PolygonSet;
+import inf.v3d.obj.Sphere;
 import inf.v3d.view.Viewer;
 
 public class Visualizer {
@@ -15,8 +16,9 @@ public class Visualizer {
 	private double radiusScale = 1;
 	private double constraintScale = 1;
 	private double arrowRadiusScale = 1;
-	private double arrowShaftScale = 1e-5;
-	private double elementForceScale = 2e-6;
+	private double arrowShaftScale = 1;
+	private double elementForceScale = 1;
+	private double nodeScale = 1;
 	private Structure structure;
 	private Viewer viewer;
 
@@ -167,6 +169,19 @@ public class Visualizer {
 
 	}
 
+	public void drawNodes() {
+		for (int i = 0; i < this.getStructure().getNumberOfNodes(); i++) {
+			Sphere s = new Sphere(this.getStructure().getNode(i).getPosition().toArray());
+			s.setRadius(nodeScale);
+			s.setColor(new Color(0, 0, 0));
+			this.getViewer().addObject3D(s);
+		}
+	}
+
+	public void setNodeScale(double scale) {
+		this.nodeScale = scale;
+	}
+
 	public void setElementForceScale(double scale) {
 		this.elementForceScale = scale;
 	}
@@ -192,12 +207,14 @@ public class Visualizer {
 	}
 
 	public void transferScalesValues() {
-		this.radiusScale = this.getStructure().getViewerScales()[0];
-		this.constraintScale = this.getStructure().getViewerScales()[1];
-		this.arrowShaftScale = this.getStructure().getViewerScales()[2];
-		this.arrowRadiusScale = this.getStructure().getViewerScales()[3];
-		this.displacementScale = this.getStructure().getViewerScales()[4];
-		this.elementForceScale = this.getStructure().getViewerScales()[5];
+		if (this.getStructure().getViewerScales() != null) {
+			this.radiusScale = this.getStructure().getViewerScales()[0];
+			this.constraintScale = this.getStructure().getViewerScales()[1];
+			this.arrowShaftScale = this.getStructure().getViewerScales()[2];
+			this.arrowRadiusScale = this.getStructure().getViewerScales()[3];
+			this.displacementScale = this.getStructure().getViewerScales()[4];
+			this.elementForceScale = this.getStructure().getViewerScales()[5];
+		}
 	}
 
 }

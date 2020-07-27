@@ -12,6 +12,7 @@ public class Element {
 	private int[] dofNumbers = new int[6];
 	private Node node1;
 	private Node node2;
+	private int meshFineness;
 
 	public Element(double e, double a, Node n1, Node n2) {
 		this.area = a;
@@ -177,6 +178,14 @@ public class Element {
 		// System.out.print(force);
 
 		return force;
+	}
+	
+	public void setMeshFineness(int fine) {
+		this.meshFineness = fine;
+	}
+	
+	public void applyMesh() {
+		
 	}
 
 }

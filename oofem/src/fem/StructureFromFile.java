@@ -47,24 +47,26 @@ public class StructureFromFile {
 		System.out.println("Calculation done in " + elapsedTimeMillis + " ms\n");
 
 		// print structure and result to console
-//		struct.printStructure();
-//		struct.printResults();
+		struct.printStructure();
+		struct.printResults();
 
 		// print structure and result to file
 //		struct.writeToFile();
 
 		// overwrite scale values
-//		viz.setRadiusScale(2);
-//		viz.setConstraintScale(0.4);
-//		viz.setArrowShaftScale(4e-5);
-//		viz.setArrowRadiusScale(7e-2);
-//		viz.setDisplacementScale(1e2);
-//		viz.setElementForceScale(1e-6); 
+		/*
+		 * viz.setRadiusScale(2); viz.setConstraintScale(0.6);
+		 * viz.setArrowShaftScale(1e-3); viz.setArrowRadiusScale(1e-1);
+		 * viz.setDisplacementScale(1e2); viz.setElementForceScale(1e-6);
+		 */
 
+		viz.setNodeScale(2e-1);
+		
 		// draw elements and solution
 		viz.drawElements();
 		viz.drawConstraints();
 		viz.drawForces();
+		viz.drawNodes();
 		viz.drawDisplacements();
 		viz.drawElementForces();
 		viewer.setVisible(true);
