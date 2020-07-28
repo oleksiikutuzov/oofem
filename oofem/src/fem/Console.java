@@ -12,7 +12,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -21,6 +24,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.Caret;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -52,6 +57,9 @@ public class Console {
 	private Viewer viewer;
 	private CSVReader reader;
 	private Visualizer viz;
+	private File file;
+	private JFileChooser chooser;
+	private JFileChooser saver;
 
 	ArrayList<String> recentUsed = new ArrayList<String>();
 	int recentUsedId = 0;
@@ -265,14 +273,12 @@ public class Console {
 					printStructure();
 
 				} else if (commands[1].equalsIgnoreCase("import")) {
-					File file = null;
-					final JFileChooser fc = new JFileChooser();
+					JFileChooser fc = getFileChooser();
 					int returnVal = fc.showOpenDialog(null);
 					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						file  = fc.getSelectedFile();
+						file = fc.getSelectedFile();
 					}
 					struct = new Structure();
-
 					CSVReader reader = new CSVReader(file);
 					struct = reader.getValues();
 
@@ -416,9 +422,26 @@ public class Console {
 						viz.drawElementForces();
 						viewer.setVisible(true);
 					}
-				} else {
-
-					println("Wrong command!", trace, new Color(250, 50, 50));
+				} else if (commands[1].equalsIgnoreCase("export")) {
+					// add current date and time
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+					Date date = new Date();
+					String exportPath = new String(file.getPath().substring(0, file.getPath().length() - 4)
+							+ "_solution_" + df.format(date) + ".txt");
+					saver = getFileSaver(file.getParent());
+					saver.setSelectedFile(new File(exportPath));
+					int returnVal = saver.showSaveDialog(null);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						String filename = saver.getSelectedFile().getPath().substring(0,
+								saver.getSelectedFile().getPath().length() - 4);
+						if (!filename.endsWith(".txt")) {
+							filename = filename + ".txt";
+							struct.writeToFile(filename);
+							println("Write to file done " + filename, false);
+						}
+					} else {
+						println("Wrong command 2!", trace, new Color(250, 50, 50));
+					}
 				}
 			}
 		} catch (Exception ex) {
@@ -477,6 +500,28 @@ public class Console {
 					+ ArrayFormat.format(this.struct.getElement(i).getLenght()), false);
 		}
 
+	}
+
+	protected JFileChooser getFileChooser() {
+		if (chooser == null) {
+			chooser = new JFileChooser();
+			FileFilter csv = new FileNameExtensionFilter("CSV file(*.csv)", "csv");
+			chooser.addChoosableFileFilter(csv);
+			chooser.setFileFilter(csv);
+			chooser.setAcceptAllFileFilterUsed(false);
+		}
+		return chooser;
+	}
+
+	protected JFileChooser getFileSaver(String path) {
+		if (saver == null) {
+			saver = new JFileChooser(path);
+			FileFilter txt = new FileNameExtensionFilter("Text file(*.txt)", "txt");
+			saver.addChoosableFileFilter(txt);
+			saver.setFileFilter(txt);
+			saver.setAcceptAllFileFilterUsed(false);
+		}
+		return saver;
 	}
 
 }

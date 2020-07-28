@@ -1,5 +1,6 @@
 package fem;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -77,9 +78,10 @@ public class Structure {
 	}
 
 	// print out information about structure and solution to file
-	public void writeToFile() throws FileNotFoundException {
+	public void writeToFile(String path) throws FileNotFoundException {
 
-		PrintWriter writer = new PrintWriter(writePath);
+		
+		PrintWriter writer = new PrintWriter(path);
 
 		writer.println("Listing structure\n");
 		writer.println("Nodes");
