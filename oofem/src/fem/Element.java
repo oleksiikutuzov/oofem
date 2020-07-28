@@ -12,7 +12,6 @@ public class Element {
 	private int[] dofNumbers = new int[6];
 	private Node node1;
 	private Node node2;
-	private int meshFineness;
 
 	public Element(double e, double a, Node n1, Node n2) {
 		this.area = a;
@@ -148,9 +147,12 @@ public class Element {
 		// System.out.println("\nDisplacement Vector");
 		// System.out.println(ArrayFormat.format(displacement));
 
-		double c1 = (this.getNode2().getPosition().getX1() - this.getNode1().getPosition().getX1()) / this.getLenght();
-		double c2 = (this.getNode2().getPosition().getX2() - this.getNode1().getPosition().getX2()) / this.getLenght();
-		double c3 = (this.getNode2().getPosition().getX3() - this.getNode1().getPosition().getX3()) / this.getLenght();
+		double c1 = (this.getNode2().getPosition().getX1() - 
+				this.getNode1().getPosition().getX1()) / this.getLenght();
+		double c2 = (this.getNode2().getPosition().getX2() - 
+				this.getNode1().getPosition().getX2()) / this.getLenght();
+		double c3 = (this.getNode2().getPosition().getX3() - 
+				this.getNode1().getPosition().getX3()) / this.getLenght();
 		double coeff = this.getEModulus() * this.getArea() / this.getLenght();
 
 		IMatrix a = new Array2DMatrix(6, 1);
@@ -178,10 +180,6 @@ public class Element {
 		// System.out.print(force);
 
 		return force;
-	}
-	
-	public void setMeshFineness(int fine) {
-		this.meshFineness = fine;
 	}
 	
 	public void setValues(double e, double a, Node n1, Node n2) {

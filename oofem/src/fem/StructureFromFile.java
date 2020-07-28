@@ -37,7 +37,6 @@ public class StructureFromFile {
 			outputPath = outputPath.concat(part1[i]);
 			outputPath = outputPath.concat("/");
 		}
-		struct.setWritePath(outputPath + part2[0] + "_solution_" + df.format(date) + ".txt");
 
 		// count time of calculation
 		long start = System.currentTimeMillis();
@@ -50,7 +49,7 @@ public class StructureFromFile {
 		struct.printResults();
 
 		// print structure and result to file
-//		struct.writeToFile();
+		struct.writeToFile(outputPath + part2[0] + "_solution_" + df.format(date) + ".txt");
 
 		// overwrite scale values
 		/*

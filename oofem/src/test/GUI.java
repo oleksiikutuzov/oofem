@@ -80,7 +80,6 @@ public class GUI implements ActionListener {
 		frame.add(panel);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Our GUI");
-		frame.pack();
 		frame.setSize(900, 660);
 		frame.setResizable(false);
 		frame.setVisible(true);

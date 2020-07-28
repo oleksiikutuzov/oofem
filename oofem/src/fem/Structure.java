@@ -1,6 +1,5 @@
 package fem;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -18,13 +17,9 @@ public class Structure {
 
 	private ArrayList<Node> nodes = new ArrayList<Node>();
 	private ArrayList<Element> elements = new ArrayList<Element>();
-	private ArrayList<Element> allelements = new ArrayList<Element>();
-	private ArrayList<Node> meshedNodes = new ArrayList<Node>();
-	private ArrayList<Node> allNodes = new ArrayList<Node>();
 	private IMatrix kGlobal;
 	private double[] rGlobal;
 	private double[] uGlobal;
-	private String writePath;
 	private double[] viewerScales;
 
 	// add node to structure
@@ -313,11 +308,6 @@ public class Structure {
 		}
 	}
 
-	// set path for output file
-	public void setWritePath(String s) {
-		this.writePath = s;
-	}
-
 	// get an array of scales values (for import from file)
 	public double[] getViewerScales() {
 		return viewerScales;
@@ -334,6 +324,10 @@ public class Structure {
 	
 	public void editElement (int ind, double e, double a, int n1, int n2) {
 		this.elements.get(ind).setValues(e, a, this.getNode(n1), this.getNode(n2));
+	}
+	
+	public void deleteElement(int id) {
+		this.elements.remove(id);
 	}
 	
 	

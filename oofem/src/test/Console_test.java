@@ -1,7 +1,9 @@
-package fem;
+package test;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,9 +17,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -28,14 +32,17 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import fem.CSVReader;
+import fem.Structure;
+import fem.Visualizer;
 import iceb.jnumerics.MatrixFormat;
 import inf.text.ArrayFormat;
 import inf.v3d.view.Viewer;
 
-public class Console {
+public class Console_test {
 
 	public static void main(String[] args) {
-		new Console();
+		new Console_test();
 
 	}
 
@@ -62,7 +69,7 @@ public class Console {
 	int recentUsedId = 0;
 	int recentUsedMax = 10;
 
-	public Console() {
+	public Console_test() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception ex) {
@@ -114,6 +121,7 @@ public class Console {
 		input = new JTextField();
 		input.setEditable(true);
 		input.setFont(new Font("Courier New", Font.PLAIN, 12));
+	
 
 		input.addActionListener(new ActionListener() {
 			@Override
@@ -166,10 +174,24 @@ public class Console {
 
 		scrollpane = new JScrollPane(console);
 		scrollpane.setBorder(null);
+	
+		Component pan = viewer.getContentPane();
+		
+		JPanel p = new JPanel();
+		p.setSize(new Dimension(300, 400));
+//		p.add(input, BorderLayout.SOUTH);
+//		p.add(scrollpane, BorderLayout.CENTER);
 
 		frame.add(input, BorderLayout.SOUTH);
 		frame.add(scrollpane, BorderLayout.CENTER);
-		frame.setSize(660, 350);
+		
+		
+		
+//		frame.add(p, BorderLayout.CENTER);
+//		frame.add(pan, BorderLayout.WEST);
+		
+		
+		frame.setSize(800, 500);
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
 		frame.setVisible(true);
@@ -177,7 +199,6 @@ public class Console {
 
 	public void print(String s, boolean trace) {
 		print(s, trace, new Color(0, 0, 0));
-
 	}
 
 	public void print(String s, boolean trace, Color c) {
