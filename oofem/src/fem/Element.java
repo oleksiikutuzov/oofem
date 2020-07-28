@@ -184,8 +184,11 @@ public class Element {
 		this.meshFineness = fine;
 	}
 	
-	public void applyMesh() {
-		
+	public void setValues(double e, double a, Node n1, Node n2) {
+		this.area = a;
+		this.eModulus = e;
+		this.node1 = n1;
+		this.node2 = n2;
 	}
 
 }

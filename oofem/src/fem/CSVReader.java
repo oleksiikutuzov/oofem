@@ -1,6 +1,7 @@
 package fem;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,13 +10,23 @@ public class CSVReader {
 
 	private Structure struct;
 	private String path;
+	private File file;
 	private static String line = "";
 	private boolean addNodes = false;
 	private boolean addConstraints = false;
 	private boolean addForces = false;
 	private boolean addElements = false;
 	private boolean addVisual = false;
+	BufferedReader br;
 
+	public CSVReader(String path) {
+		this.path = path;
+	}
+	
+	public CSVReader(File file) {
+		this.file = file;
+	}
+	
 	// set path for file with model
 	public void setPath(String s) {
 		this.path = s;
@@ -27,7 +38,11 @@ public class CSVReader {
 			// initialize Structure object
 			this.struct = new Structure();
 			// initialize BufferedReader
-			BufferedReader br = new BufferedReader(new FileReader(path));
+			if (file == null) {
+			br = new BufferedReader(new FileReader(path));
+			} else {
+			br = new BufferedReader(new FileReader(file));
+			}
 
 			// BufferedReader going through all lines until end of file
 			while ((line = br.readLine()) != null) {

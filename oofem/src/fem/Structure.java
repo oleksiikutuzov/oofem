@@ -326,5 +326,13 @@ public class Structure {
 		this.viewerScales = viewerScales;
 	}
 	
+	public void editNode(int ind, double x1, double x2, double x3) {
+		this.nodes.get(ind).setPosition(x1, x2, x3);
+	}
+	
+	public void editElement (int ind, double e, double a, int n1, int n2) {
+		this.elements.get(ind).setValues(e, a, this.getNode(n1), this.getNode(n2));
+	}
+	
 	
 }

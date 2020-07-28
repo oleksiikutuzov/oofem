@@ -13,13 +13,12 @@ public class StructureFromFile {
 
 		// initialize Viewer and reader
 		Viewer viewer = new Viewer();
-		CSVReader reader = new CSVReader();
+		
 
 		// define path to the model
 		String modelPath = "C:\\testFolder/DomeTruss.csv";
+		CSVReader reader = new CSVReader(modelPath);
 
-		// set path to the model
-		reader.setPath(modelPath);
 		// create Structure by getting values from file
 		Structure struct = reader.getValues();
 		// initialize Visualizer

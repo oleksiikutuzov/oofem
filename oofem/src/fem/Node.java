@@ -67,5 +67,9 @@ public class Node {
 	public void print() {
 		System.out.println(MatrixFormat.format(this.position));
 	}
+	
+	public void setPosition(double x1, double x2, double x3) {
+		this.position = new Vector3D(x1, x2, x3);
+	}
 
 }

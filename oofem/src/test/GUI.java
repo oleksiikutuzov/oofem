@@ -38,9 +38,10 @@ public class GUI implements ActionListener {
 		viewer = new Viewer();
 		frame = new JFrame();
 		button = new JButton("Apply");
-		CSVReader reader = new CSVReader();
+		
 		String modelPath = "C:\\testFolder/DomeTruss.csv";
-		reader.setPath(modelPath);
+		CSVReader reader = new CSVReader(modelPath);
+
 		struct = reader.getValues();
 
 		panel = new JPanel();

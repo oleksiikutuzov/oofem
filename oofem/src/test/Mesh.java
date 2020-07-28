@@ -1,4 +1,6 @@
-package fem;
+package test;
+
+import fem.Element;
 
 public class Mesh {
 	
@@ -8,6 +10,6 @@ public class Mesh {
 		this.element = elem;
 	}
 	
-	public 
+	
 
 }
