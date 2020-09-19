@@ -10,6 +10,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -127,7 +128,12 @@ public class Console {
 					recentUsedId = 0;
 
 					println(text, false);
-					doCommand(text);
+					try {
+						doCommand2(text);
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					scrollBottom();
 					input.selectAll();
 				}
@@ -204,6 +210,246 @@ public class Console {
 
 	public void println(String s, boolean trace, Color c) {
 		print(s + "\n", trace, c);
+	}
+
+	public void doCommand2(String s) throws FileNotFoundException {
+		final String[] commands = s.split(" ");
+
+		try {
+			switch (commands[0].toUpperCase()) {
+
+			case "CLEAR":
+				clear();
+				break;
+
+			case "POPUP":
+				String message = "";
+				for (int i = 1; i < commands.length; i++) {
+					message += commands[i];
+					if (i != commands.length - 1) {
+						message += " ";
+					}
+					JOptionPane.showMessageDialog(null, message, "Message", JOptionPane.INFORMATION_MESSAGE);
+				}
+				break;
+
+			case "STRUCTURE":
+				switch (commands[1].toUpperCase()) {
+
+				case "NEW":
+					struct = new Structure();
+					break;
+
+				case "IMPORTBYPATH":
+					struct = new Structure();
+					String modelPath = commands[2];
+
+					reader = new CSVReader(modelPath);
+					struct = reader.getValues();
+
+					println("Structure import done!", false);
+					break;
+
+				case "DRAW":
+					if (struct == null) {
+						println("You need to create structure first", false, warn);
+					} else {
+						if (viewer.isVisible()) {
+							viewer = new Viewer();
+							viewer.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+							viz = new Visualizer(struct, viewer);
+							viz.transferScalesValues();
+							viz.setNodeScale(2e-1);
+							viz.drawElements();
+							viz.drawConstraints();
+							viz.drawForces();
+							viz.drawNodes();
+							viewer.setVisible(true);
+						} else {
+							viewer = new Viewer();
+							viewer.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+							viz = new Visualizer(struct, viewer);
+							viz.transferScalesValues();
+							viz.setNodeScale(2e-1);
+							viz.drawElements();
+							viz.drawConstraints();
+							viz.drawForces();
+							viz.drawNodes();
+							viewer.setVisible(true);
+						}
+					}
+					break;
+
+				case "PRINT":
+					printStructure();
+					break;
+
+				case "IMPORT":
+					JFileChooser fc = getFileChooser();
+					int returnVal = fc.showOpenDialog(null);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						file = fc.getSelectedFile();
+					}
+					struct = new Structure();
+					CSVReader reader = new CSVReader(file);
+					struct = reader.getValues();
+
+					println("Structure import done!", false);
+					break;
+
+				case "ADD":
+					if (this.struct == null) {
+						println("You need to create structure first", false, warn);
+					} else if (commands.length <= 2) {
+						println("Please provide input", false, warn);
+					} else {
+						switch (commands[2].toUpperCase()) {
+						case "NODE":
+							try {
+								struct.addNode(Double.parseDouble(commands[3]), Double.parseDouble(commands[4]),
+										Double.parseDouble(commands[5]));
+							} catch (NumberFormatException e) {
+								print("Please enter numbers", false, warn);
+							} catch (NullPointerException n) {
+								print("Your input is not full", false, warn);
+							}
+							break;
+
+						case "ELEMENT":
+							try {
+								struct.addElement(Double.parseDouble(commands[3]), Double.parseDouble(commands[4]),
+										Integer.parseInt(commands[5]), Integer.parseInt(commands[6]));
+							} catch (NumberFormatException e) {
+								print("Please enter numbers", false, warn);
+							} catch (NullPointerException e) {
+								print("Your input is not full", false, warn);
+							} catch (IndexOutOfBoundsException e) {
+								print("One of the nodes does not exist", false, warn);
+							}
+							break;
+
+						default:
+							println("Wrong input", false, warn);
+							break;
+						}
+					}
+					break;
+
+				case "MODIFY":
+					if (this.struct == null) {
+						println("You need to create structure first", false, warn);
+					} else if (commands.length <= 2) {
+						println("Please provide input", false, warn);
+					} else {
+						switch (commands[2].toUpperCase()) {
+						case "NODE":
+							try {
+								struct.editNode(Integer.parseInt(commands[3]), Double.parseDouble(commands[4]),
+										Double.parseDouble(commands[5]), Double.parseDouble(commands[6]));
+							} catch (NumberFormatException e) {
+								print("Please enter numbers", false, warn);
+							} catch (NullPointerException n) {
+								print("Your input is not full", false, warn);
+							} catch (IndexOutOfBoundsException e) {
+								print("One of the values does not exist or input isn't full", false, warn);
+							}
+							break;
+
+						case "ELEMENT":
+							try {
+								struct.editElement(Integer.parseInt(commands[3]), Double.parseDouble(commands[4]),
+										Double.parseDouble(commands[5]), Integer.parseInt(commands[6]),
+										Integer.parseInt(commands[7]));
+							} catch (NumberFormatException e) {
+								print("Please enter numbers", false, warn);
+							} catch (NullPointerException e) {
+								print("Your input is not full", false, warn);
+							} catch (IndexOutOfBoundsException e) {
+								print("One of the nodes does not exist or input isn't full", false, warn);
+							}
+							break;
+
+						default:
+							println("Wrong input", false, warn);
+							break;
+						}
+					}
+					break;
+
+				case "SOLVE":
+					if (this.struct == null) {
+						println("You need to create structure first", false, warn);
+					} else {
+						long start = System.currentTimeMillis();
+						struct.solve();
+						long elapsedTimeMillis = System.currentTimeMillis() - start;
+						println("Calculation done in " + elapsedTimeMillis + " ms\n", false);
+					}
+					break;
+
+				default:
+					println("Wrong command 2!", trace, new Color(250, 50, 50));
+					break;
+				}
+				break;
+
+			case "RESULT":
+				switch (commands[1].toUpperCase()) {
+				case "DRAW":
+					if (viewer.isVisible()) {
+						viz.drawDisplacements();
+						viz.drawElementForces();
+						viewer.setVisible(true);
+					} else {
+						viewer = new Viewer();
+						viewer.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						viz = new Visualizer(struct, viewer);
+						viz.transferScalesValues();
+						viz.setNodeScale(2e-1);
+						viz.drawElements();
+						viz.drawConstraints();
+						viz.drawForces();
+						viz.drawNodes();
+						viz.drawDisplacements();
+						viz.drawElementForces();
+						viewer.setVisible(true);
+					}
+					break;
+
+				case "EXPORT":
+					// add current date and time
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+					Date date = new Date();
+					String exportPath = new String(file.getPath().substring(0, file.getPath().length() - 4)
+							+ "_solution_" + df.format(date) + ".txt");
+					saver = getFileSaver(file.getParent());
+					saver.setSelectedFile(new File(exportPath));
+					int returnVal = saver.showSaveDialog(null);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						String filename = saver.getSelectedFile().getPath().substring(0,
+								saver.getSelectedFile().getPath().length() - 4);
+						if (!filename.endsWith(".txt")) {
+							filename = filename + ".txt";
+							struct.writeToFile(filename);
+							println("Write to file done " + filename, false);
+						}
+					}
+					break;
+
+				default:
+					println("Wrong command 2!", trace, new Color(250, 50, 50));
+					break;
+				}
+				break;
+
+			default:
+				println("Wrong command 1!", trace, new Color(250, 50, 50));
+				break;
+			}
+
+		} catch (Exception ex) {
+			println("Error -> " + ex.getClass() + ": " + ex.getMessage(), trace, new Color(250, 50, 50));
+		}
 	}
 
 	public void doCommand(String s) {
