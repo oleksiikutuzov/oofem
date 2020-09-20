@@ -21,10 +21,10 @@ public class Element {
 	}
 
 	public IMatrix computeStiffnessMatrix2() {
-		double c1 = (this.getNode2().getPosition().getX1() - this.getNode1().getPosition().getX1()) / this.getLenght();
-		double c2 = (this.getNode2().getPosition().getX2() - this.getNode1().getPosition().getX2()) / this.getLenght();
-		double c3 = (this.getNode2().getPosition().getX3() - this.getNode1().getPosition().getX3()) / this.getLenght();
-		double coeff = this.getEModulus() * this.getArea() / this.getLenght();
+		double c1 = (this.getNode2().getPosition().getX1() - this.getNode1().getPosition().getX1()) / this.getLength();
+		double c2 = (this.getNode2().getPosition().getX2() - this.getNode1().getPosition().getX2()) / this.getLength();
+		double c3 = (this.getNode2().getPosition().getX3() - this.getNode1().getPosition().getX3()) / this.getLength();
+		double coeff = this.getEModulus() * this.getArea() / this.getLength();
 
 		IMatrix transform = new Array2DMatrix(2, 6);
 		IMatrix k_local = new Array2DMatrix(2, 2);
@@ -53,14 +53,14 @@ public class Element {
 		return k_global;
 
 	}
-
+	
 	public IMatrix computeStiffnessMatrix() {
 
 		// calculate variables
-		double c1 = (this.getNode2().getPosition().getX1() - this.getNode1().getPosition().getX1()) / this.getLenght();
-		double c2 = (this.getNode2().getPosition().getX2() - this.getNode1().getPosition().getX2()) / this.getLenght();
-		double c3 = (this.getNode2().getPosition().getX3() - this.getNode1().getPosition().getX3()) / this.getLenght();
-		double coeff = this.getEModulus() * this.getArea() / this.getLenght();
+		double c1 = (this.getNode2().getPosition().getX1() - this.getNode1().getPosition().getX1()) / this.getLength();
+		double c2 = (this.getNode2().getPosition().getX2() - this.getNode1().getPosition().getX2()) / this.getLength();
+		double c3 = (this.getNode2().getPosition().getX3() - this.getNode1().getPosition().getX3()) / this.getLength();
+		double coeff = this.getEModulus() * this.getArea() / this.getLength();
 
 		// System.out.println(ArrayFormat.format(new double[]{c1, c2, c3, coeff}) +
 		// "\n");
@@ -90,6 +90,18 @@ public class Element {
 
 		return k_glob;
 	}
+	
+	
+	public IMatrix computeMaterialStiffnessMatrix() {
+		
+		// calculate variables
+		double c1 = (this.getNode2().getPosition().getX1() - this.getNode1().getPosition().getX1()) / this.getLength();
+		double c2 = (this.getNode2().getPosition().getX2() - this.getNode1().getPosition().getX2()) / this.getLength();
+		double c3 = (this.getNode2().getPosition().getX3() - this.getNode1().getPosition().getX3()) / this.getLength();
+		double coeff = this.eModulus/2*((this.getCurrentLength() - this.getLength())/this.getLength());
+		
+		
+	}
 
 	public void enumerateDOFs() {
 		for (int i = 0; i < 3; i++) {
@@ -110,11 +122,26 @@ public class Element {
 	 * }
 	 */
 
-	public double getLenght() {
+	public double getLength() {
 		double xLength = node2.getPosition().getX1() - node1.getPosition().getX1();
 		double yLength = node2.getPosition().getX2() - node1.getPosition().getX2();
 		double zLength = node2.getPosition().getX3() - node1.getPosition().getX3();
 		return Math.sqrt(xLength * xLength + yLength * yLength + zLength * zLength);
+	}
+	
+	public double getCurrentLength() {
+		if (this.getNode1().getPreLoadDispl() == null && this.getNode2().getPreLoadDispl() == null) {
+			this.getNode1().setPreLoadDispl(0, 0, 0);
+			this.getNode2().setPreLoadDispl(0, 0, 0);
+		} else if (this.getNode2().getPreLoadDispl() == null) {
+			this.getNode2().setPreLoadDispl(0, 0, 0);
+		} else if (this.getNode1().getPreLoadDispl() == null) {
+			this.getNode1().setPreLoadDispl(0, 0, 0);
+		}
+		double xCurrentLength = node2.getCurrentPosition().getX1() - node1.getCurrentPosition().getX1();
+		double yCurrentLength = node2.getCurrentPosition().getX2() - node1.getCurrentPosition().getX2();
+		double zCurrentLength = node2.getCurrentPosition().getX3() - node1.getCurrentPosition().getX3();
+		return Math.sqrt(xCurrentLength * xCurrentLength + yCurrentLength * yCurrentLength + zCurrentLength * zCurrentLength);
 	}
 
 	public Node getNode1() {
@@ -135,7 +162,7 @@ public class Element {
 
 	public void print() {
 		System.out.println(ArrayFormat.format(this.getEModulus()) + ArrayFormat.format(this.getArea())
-				+ ArrayFormat.format(this.getLenght()));
+				+ ArrayFormat.format(this.getLength()));
 	}
 
 	public double computeForce() {
@@ -148,12 +175,12 @@ public class Element {
 		// System.out.println(ArrayFormat.format(displacement));
 
 		double c1 = (this.getNode2().getPosition().getX1() - 
-				this.getNode1().getPosition().getX1()) / this.getLenght();
+				this.getNode1().getPosition().getX1()) / this.getLength();
 		double c2 = (this.getNode2().getPosition().getX2() - 
-				this.getNode1().getPosition().getX2()) / this.getLenght();
+				this.getNode1().getPosition().getX2()) / this.getLength();
 		double c3 = (this.getNode2().getPosition().getX3() - 
-				this.getNode1().getPosition().getX3()) / this.getLenght();
-		double coeff = this.getEModulus() * this.getArea() / this.getLenght();
+				this.getNode1().getPosition().getX3()) / this.getLength();
+		double coeff = this.getEModulus() * this.getArea() / this.getLength();
 
 		IMatrix a = new Array2DMatrix(6, 1);
 		IMatrix c = new Array2DMatrix(2, 1);

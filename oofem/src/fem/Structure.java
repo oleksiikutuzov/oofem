@@ -68,7 +68,7 @@ public class Structure {
 		for (int i = 0; i < this.getNumberOfElements(); i++) {
 			System.out.println(ArrayFormat.format(i) + ArrayFormat.format(this.getElement(i).getEModulus())
 					+ ArrayFormat.format(this.getElement(i).getArea())
-					+ ArrayFormat.format(this.getElement(i).getLenght()));
+					+ ArrayFormat.format(this.getElement(i).getLength()));
 		}
 	}
 
@@ -108,7 +108,7 @@ public class Structure {
 		for (int i = 0; i < this.getNumberOfElements(); i++) {
 			writer.println(ArrayFormat.format(i) + ArrayFormat.format(this.getElement(i).getEModulus())
 					+ ArrayFormat.format(this.getElement(i).getArea())
-					+ ArrayFormat.format(this.getElement(i).getLenght()));
+					+ ArrayFormat.format(this.getElement(i).getLength()));
 		}
 
 		writer.println("\nListing analysis results");

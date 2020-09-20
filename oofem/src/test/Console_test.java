@@ -479,7 +479,7 @@ public class Console_test {
 		for (int i = 0; i < this.struct.getNumberOfElements(); i++) {
 			println(ArrayFormat.format(i) + ArrayFormat.format(this.struct.getElement(i).getEModulus())
 					+ ArrayFormat.format(this.struct.getElement(i).getArea())
-					+ ArrayFormat.format(this.struct.getElement(i).getLenght()), false);
+					+ ArrayFormat.format(this.struct.getElement(i).getLength()), false);
 		}
 
 	}

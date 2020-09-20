@@ -129,7 +129,7 @@ public class Console {
 
 					println(text, false);
 					try {
-						doCommand2(text);
+						doCommand(text);
 					} catch (FileNotFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -212,7 +212,7 @@ public class Console {
 		print(s + "\n", trace, c);
 	}
 
-	public void doCommand2(String s) throws FileNotFoundException {
+	public void doCommand(String s) throws FileNotFoundException {
 		final String[] commands = s.split(" ");
 
 		try {
@@ -393,7 +393,7 @@ public class Console {
 				}
 				break;
 
-			case "RESULT":
+			case "SOLUTION":
 				switch (commands[1].toUpperCase()) {
 				case "DRAW":
 					if (viewer.isVisible()) {
@@ -452,212 +452,6 @@ public class Console {
 		}
 	}
 
-	public void doCommand(String s) {
-		final String[] commands = s.split(" ");
-
-		try {
-			if (commands[0].equalsIgnoreCase("clear")) {
-				clear();
-			} else if (commands[0].equalsIgnoreCase("popup")) {
-				String message = "";
-				for (int i = 1; i < commands.length; i++) {
-					message += commands[i];
-					if (i != commands.length - 1) {
-						message += " ";
-					}
-					JOptionPane.showMessageDialog(null, message, "Message", JOptionPane.INFORMATION_MESSAGE);
-
-				}
-			} else if (commands[0].equalsIgnoreCase("structure")) {
-
-				if (commands[1].equalsIgnoreCase("new")) {
-					struct = new Structure();
-				} else if (commands[1].equalsIgnoreCase("importByPath")) {
-
-					struct = new Structure();
-					String modelPath = commands[2];
-
-					reader = new CSVReader(modelPath);
-					struct = reader.getValues();
-
-					println("Structure import done!", false);
-
-				} else if (commands[1].equalsIgnoreCase("draw")) {
-
-					if (struct == null) {
-						println("You need to create structure first", false, warn);
-					} else {
-						if (viewer.isVisible()) {
-							viewer = new Viewer();
-							viewer.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-							viz = new Visualizer(struct, viewer);
-							viz.transferScalesValues();
-							viz.setNodeScale(2e-1);
-							viz.drawElements();
-							viz.drawConstraints();
-							viz.drawForces();
-							viz.drawNodes();
-							viewer.setVisible(true);
-						} else {
-							viewer = new Viewer();
-							viewer.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-							viz = new Visualizer(struct, viewer);
-							viz.transferScalesValues();
-							viz.setNodeScale(2e-1);
-							viz.drawElements();
-							viz.drawConstraints();
-							viz.drawForces();
-							viz.drawNodes();
-							viewer.setVisible(true);
-						}
-					}
-
-				} else if (commands[1].equalsIgnoreCase("print")) {
-					printStructure();
-
-				} else if (commands[1].equalsIgnoreCase("import")) {
-					JFileChooser fc = getFileChooser();
-					int returnVal = fc.showOpenDialog(null);
-					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						file = fc.getSelectedFile();
-					}
-					struct = new Structure();
-					CSVReader reader = new CSVReader(file);
-					struct = reader.getValues();
-
-					println("Structure import done!", false);
-				} else if (commands[1].equalsIgnoreCase("add")) {
-
-					if (this.struct == null) {
-						println("You need to create structure first", false, warn);
-					} else if (commands.length <= 2) {
-						println("Please provide input", false, warn);
-					} else {
-
-						if (commands[2].equalsIgnoreCase("node")) {
-							try {
-								struct.addNode(Double.parseDouble(commands[3]), Double.parseDouble(commands[4]),
-										Double.parseDouble(commands[5]));
-							} catch (NumberFormatException e) {
-								print("Please enter numbers", false, warn);
-							} catch (NullPointerException n) {
-								print("Your input is not full", false, warn);
-							}
-						} else if (commands[2].equalsIgnoreCase("element")) {
-							try {
-								struct.addElement(Double.parseDouble(commands[3]), Double.parseDouble(commands[4]),
-										Integer.parseInt(commands[5]), Integer.parseInt(commands[6]));
-							} catch (NumberFormatException e) {
-								print("Please enter numbers", false, warn);
-							} catch (NullPointerException e) {
-								print("Your input is not full", false, warn);
-							} catch (IndexOutOfBoundsException e) {
-								print("One of the nodes does not exist", false, warn);
-							}
-						} else {
-							println("Wrong input", false, warn);
-						}
-					}
-
-				} else if (commands[1].equalsIgnoreCase("modify")) {
-
-					if (this.struct == null) {
-						println("You need to create structure first", false, warn);
-					} else if (commands.length <= 2) {
-						println("Please provide input", false, warn);
-					} else {
-
-						if (commands[2].equalsIgnoreCase("node")) {
-							try {
-								struct.editNode(Integer.parseInt(commands[3]), Double.parseDouble(commands[4]),
-										Double.parseDouble(commands[5]), Double.parseDouble(commands[6]));
-							} catch (NumberFormatException e) {
-								print("Please enter numbers", false, warn);
-							} catch (NullPointerException n) {
-								print("Your input is not full", false, warn);
-							} catch (IndexOutOfBoundsException e) {
-								print("One of the values does not exist or input isn't full", false, warn);
-							}
-						} else if (commands[2].equalsIgnoreCase("element")) {
-							try {
-								struct.editElement(Integer.parseInt(commands[3]), Double.parseDouble(commands[4]),
-										Double.parseDouble(commands[5]), Integer.parseInt(commands[6]),
-										Integer.parseInt(commands[7]));
-							} catch (NumberFormatException e) {
-								print("Please enter numbers", false, warn);
-							} catch (NullPointerException e) {
-								print("Your input is not full", false, warn);
-							} catch (IndexOutOfBoundsException e) {
-								print("One of the nodes does not exist or input isn't full", false, warn);
-							}
-						} else {
-							println("Wrong input", false, warn);
-						}
-					}
-
-				} else if (commands[1].equalsIgnoreCase("solve")) {
-					if (this.struct == null) {
-						println("You need to create structure first", false, warn);
-					} else {
-						long start = System.currentTimeMillis();
-						struct.solve();
-						long elapsedTimeMillis = System.currentTimeMillis() - start;
-						println("Calculation done in " + elapsedTimeMillis + " ms\n", false);
-					}
-				} else {
-					println("Wrong command 2!", trace, new Color(250, 50, 50));
-				}
-
-			} else if (commands[0].equalsIgnoreCase("result")) {
-				if (commands[1].equalsIgnoreCase("draw")) {
-					if (viewer.isVisible()) {
-						viz.drawDisplacements();
-						viz.drawElementForces();
-						viewer.setVisible(true);
-					} else {
-						viewer = new Viewer();
-						viewer.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-						viz = new Visualizer(struct, viewer);
-						viz.transferScalesValues();
-						viz.setNodeScale(2e-1);
-						viz.drawElements();
-						viz.drawConstraints();
-						viz.drawForces();
-						viz.drawNodes();
-						viz.drawDisplacements();
-						viz.drawElementForces();
-						viewer.setVisible(true);
-					}
-				} else if (commands[1].equalsIgnoreCase("export")) {
-					// add current date and time
-					DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-					Date date = new Date();
-					String exportPath = new String(file.getPath().substring(0, file.getPath().length() - 4)
-							+ "_solution_" + df.format(date) + ".txt");
-					saver = getFileSaver(file.getParent());
-					saver.setSelectedFile(new File(exportPath));
-					int returnVal = saver.showSaveDialog(null);
-					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						String filename = saver.getSelectedFile().getPath().substring(0,
-								saver.getSelectedFile().getPath().length() - 4);
-						if (!filename.endsWith(".txt")) {
-							filename = filename + ".txt";
-							struct.writeToFile(filename);
-							println("Write to file done " + filename, false);
-						} else {
-							println("Wrong command 2!", trace, new Color(250, 50, 50));
-						}
-					}
-				} else if (commands[1].equalsIgnoreCase("print")) {
-					printResult();
-				}
-			}
-		} catch (Exception ex) {
-			println("Error -> " + ex.getClass() + ": " + ex.getMessage(), trace, new Color(250, 50, 50));
-		}
-
-	}
-
 	public void scrollTop() {
 		console.setCaretPosition(0);
 	}
@@ -704,7 +498,7 @@ public class Console {
 		for (int i = 0; i < this.struct.getNumberOfElements(); i++) {
 			println(ArrayFormat.format(i) + ArrayFormat.format(this.struct.getElement(i).getEModulus())
 					+ ArrayFormat.format(this.struct.getElement(i).getArea())
-					+ ArrayFormat.format(this.struct.getElement(i).getLenght()), false);
+					+ ArrayFormat.format(this.struct.getElement(i).getLength()), false);
 		}
 
 	}
