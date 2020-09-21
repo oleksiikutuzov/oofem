@@ -130,14 +130,14 @@ public class Structure {
 	}
 
 	// solve system of equations
-	public void solve() {
+	public void solve(boolean lin) {
 
 		// get number of equations
 		int NEQ = enumerateDOFs();
 		// initialize global stiffness matrix
 		kGlobal = new Array2DMatrix(NEQ, NEQ);
 		// assemble global stiffness matrix
-		this.assembleStiffnessMatrix(kGlobal);
+		this.assembleStiffnessMatrix(kGlobal, lin);
 		// initialize global load vector
 		rGlobal = new double[NEQ];
 		// assemble global load vectors
@@ -221,7 +221,7 @@ public class Structure {
 	}
 
 	// assembly of a stiffness matrix
-	private void assembleStiffnessMatrix(IMatrix kGlobal) {
+	private void assembleStiffnessMatrix(IMatrix kGlobal, boolean lin) {
 		for (int i = 0; i < this.getNumberOfElements(); i++) {
 			for (int j = 0; j < 6; j++) {
 				int n = this.getElement(i).getDOFNumbers()[j];
@@ -229,7 +229,11 @@ public class Structure {
 					for (int k = 0; k < 6; k++) {
 						int m = this.getElement(i).getDOFNumbers()[k];
 						if (m >= 0) {
+							if (lin == true) {
 							kGlobal.add(n, m, this.getElement(i).computeStiffnessMatrix().get(j, k));
+							} else if (lin == false) {
+								kGlobal.add(n, m, this.getElement(i).computeNonlinearStiffnessMatrix().get(j, k));
+							}
 						}
 					}
 				}

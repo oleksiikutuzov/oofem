@@ -40,7 +40,7 @@ public class StructureFromFile {
 
 		// count time of calculation
 		long start = System.currentTimeMillis();
-		struct.solve();
+		struct.solve(true);
 		long elapsedTimeMillis = System.currentTimeMillis() - start;
 		System.out.println("Calculation done in " + elapsedTimeMillis + " ms\n");
 

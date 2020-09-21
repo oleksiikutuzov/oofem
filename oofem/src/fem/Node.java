@@ -69,7 +69,7 @@ public class Node {
 	public void print() {
 		System.out.println(MatrixFormat.format(this.position));
 	}
-	
+
 	public void setPosition(double x1, double x2, double x3) {
 		this.position = new Vector3D(x1, x2, x3);
 	}
@@ -78,13 +78,17 @@ public class Node {
 		return preLoadDispl;
 	}
 
-	public void setPreLoadDispl(double x1, double x2, double x3) {
-		this.preLoadDispl =  new Vector3D(x1, x2, x3);
+	public void setPreLoadDisplacement(double x1, double x2, double x3) {
+		this.preLoadDispl = new Vector3D(x1, x2, x3);
 		this.currentConf = this.position.add(preLoadDispl);
 	}
 
 	public Vector3D getCurrentPosition() {
-		return currentConf;
+		if (currentConf == null) {
+			return this.position;
+		} else {
+			return currentConf;
+		}
 	}
 
 }

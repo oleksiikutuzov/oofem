@@ -376,12 +376,23 @@ public class Console {
 					}
 					break;
 
-				case "SOLVE":
+				case "SOLVE_LINEAR":
 					if (this.struct == null) {
 						println("You need to create structure first", false, warn);
 					} else {
 						long start = System.currentTimeMillis();
-						struct.solve();
+						struct.solve(true);
+						long elapsedTimeMillis = System.currentTimeMillis() - start;
+						println("Calculation done in " + elapsedTimeMillis + " ms\n", false);
+					}
+					break;
+					
+				case "SOLVE_NONLINEAR":
+					if (this.struct == null) {
+						println("You need to create structure first", false, warn);
+					} else {
+						long start = System.currentTimeMillis();
+						struct.solve(false);
 						long elapsedTimeMillis = System.currentTimeMillis() - start;
 						println("Calculation done in " + elapsedTimeMillis + " ms\n", false);
 					}
