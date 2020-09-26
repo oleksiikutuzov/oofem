@@ -31,7 +31,7 @@ public class SmallTetraeder {
 		n2.setConstraint(c1);
 		n3.setConstraint(c1);
 		n4.setConstraint(c2);
-		//n1.setPreLoadDisplacement(0, 0, -10);
+		n1.setPreLoadDisplacement(0, 10e-4, 10e-3);
 
 		// create elements
 		struct.addElement(e, a, 0, 1);
@@ -50,6 +50,8 @@ public class SmallTetraeder {
 		Viewer viewer = new Viewer();
 		Structure struct = createStructure();
 		struct.solve(false);
+//		struct.printStructure();
+		struct.printResults();
 		Visualizer viz = new Visualizer(struct, viewer);
 		viz.drawElements();
 		viz.setConstraintScale(0.8);
@@ -57,7 +59,7 @@ public class SmallTetraeder {
 		viz.setArrowShaftScale(0.000025);
 		viz.setArrowRadiusScale(0.1);
 		viz.drawForces();
-		viz.setDisplacementScale(3e3);
+		viz.setDisplacementScale(3e1);
 		viz.drawDisplacements();
 		viz.setElementForceScale(1e-7);
 //		viz.drawElementForces();

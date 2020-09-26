@@ -154,6 +154,10 @@ public class Structure {
 		// initialize solver
 		aInfo.setSize(NEQ);
 		solver.initialize();
+		
+		System.out.println("\nAssembled global force vector");
+		System.out.println(ArrayFormat.format(rGlobal));
+		  
 
 		// set values to load vector
 		for (int i = 0; i < NEQ; i++) {
@@ -162,11 +166,11 @@ public class Structure {
 			}
 		}
 
-		/*
-		 * print System.out.println("\nSolving A x = b");
-		 * System.out.println("Matrix A"); System.out.println(MatrixFormat.format(a));
-		 * System.out.println("Vector b"); System.out.println(ArrayFormat.format(b));
-		 */
+		
+		  System.out.println("\nSolving A x = b");
+		  System.out.println("Matrix A"); System.out.println(MatrixFormat.format(a));
+		  System.out.println("Vector b"); System.out.println(ArrayFormat.format(b));
+		 
 
 		// after calling solve, b contains the solution
 		try {
@@ -175,10 +179,11 @@ public class Structure {
 			System.out.println("Solve failed: " + e.getMessage());
 		}
 
-		/*
-		 * print result System.out.println("Solution x");
-		 * System.out.println(ArrayFormat.format(b));
-		 */
+		
+		  //print result 
+		  System.out.println("Solution x");
+		  System.out.println(ArrayFormat.format(b));
+		 
 
 		this.uGlobal = b;
 		applyDisplacements(NEQ, this.uGlobal);

@@ -169,6 +169,96 @@ public class Element {
 		return k_glob;
 				
 	}
+	
+	public IMatrix computeNonlinearStiffnessMatrix2() {
+
+		// calculate cosines
+		double c1 = (this.getNode2().getPosition().getX1() - this.getNode1().getPosition().getX1())
+				/ this.getCurrentLength();
+		double c2 = (this.getNode2().getPosition().getX2() - this.getNode1().getPosition().getX2())
+				/ this.getCurrentLength();
+		double c3 = (this.getNode2().getPosition().getX3() - this.getNode1().getCurrentPosition().getX3())
+				/ this.getCurrentLength();
+
+		// geometrical stifness matrix
+		double coeff_geo = this.getArea() * this.getEModulus() * this.getE1() / this.getLength();
+
+		// initialise matrices
+		IMatrix k_geo = new Array2DMatrix(6, 6);
+		IMatrix k_geo_part = new Array2DMatrix(3, 3);
+
+		// fill small matrix
+		k_geo_part.set(0, 0, coeff_geo);
+		k_geo_part.set(1, 1, coeff_geo);
+		k_geo_part.set(2, 2, coeff_geo);
+
+		// set parts
+		k_geo.setMatrix(0, 0, k_geo_part);
+		k_geo.setMatrix(0, 3, k_geo_part.multiply(-1));
+		k_geo.setMatrix(3, 0, k_geo_part.multiply(-1));
+		k_geo.setMatrix(3, 3, k_geo_part);
+
+		// material stifness matrix
+		double a = this.getNode1().getCurrentPosition().getX1() - this.getNode2().getCurrentPosition().getX1();
+		double b = this.getNode1().getCurrentPosition().getX2() - this.getNode2().getCurrentPosition().getX2();
+		double c = this.getNode1().getCurrentPosition().getX3() - this.getNode2().getCurrentPosition().getX3();
+		double coeff_mat = this.getEModulus() * this.getArea()
+				/ (this.getLength() * this.getLength() * this.getLength());
+
+		// initialise matrices
+		IMatrix k_mat = new Array2DMatrix(9, 9);
+		IMatrix k_mat_part = new Array2DMatrix(3, 3);
+
+		// fill small matrix
+		k_mat_part.set(0, 0, coeff_mat * a * a);
+		k_mat_part.set(0, 1, coeff_mat * a * b);
+		k_mat_part.set(0, 2, coeff_mat * a * c);
+		k_mat_part.set(1, 0, coeff_mat * b * a);
+		k_mat_part.set(1, 1, coeff_mat * b * b);
+		k_mat_part.set(1, 2, coeff_mat * b * c);
+		k_mat_part.set(2, 0, coeff_mat * c * a);
+		k_mat_part.set(2, 1, coeff_mat * c * b);
+		k_mat_part.set(2, 2, coeff_mat * c * c);
+
+		// set parts
+		k_mat.setMatrix(0, 0, k_mat_part);
+		k_mat.setMatrix(0, 3, k_mat_part.multiply(-1));
+		k_mat.setMatrix(3, 0, k_mat_part.multiply(-1));
+		k_mat.setMatrix(3, 3, k_mat_part);
+		
+		// add matrices together
+		IMatrix k_glob = new Array2DMatrix(6, 6);
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 6; j++) {
+		k_glob.set(i, j, k_geo.get(i, j) + k_mat.get(i, j));
+		}}
+		
+		// transformation matrix matrix
+		IMatrix transform = new Array2DMatrix(2, 6);
+		IMatrix tmp = new Array2DMatrix(6, 6);
+		IMatrix glob = new Array2DMatrix(6, 6);
+
+		// initialize A and B
+		transform.set(0, 0, c1);
+		transform.set(0, 1, c2);
+		transform.set(0, 2, c3);
+		transform.set(1, 3, c1);
+		transform.set(1, 4, c2);
+		transform.set(1, 5, c3);
+
+		// compute 
+		BLAM.multiply(1.0, BLAM.TRANSPOSE, transform, BLAM.NO_TRANSPOSE, k_glob, 0.0, tmp);
+		BLAM.multiply(1.0, BLAM.NO_TRANSPOSE, tmp, BLAM.NO_TRANSPOSE, transform, 0.0, glob);
+		
+		
+		//System.out.println(MatrixFormat.format(k_geo));
+		//System.out.println(MatrixFormat.format(k_mat));
+		//System.out.println(MatrixFormat.format(k_glob));
+		
+		
+		return glob;
+				
+	}
 
 	public void enumerateDOFs() {
 		for (int i = 0; i < 3; i++) {
