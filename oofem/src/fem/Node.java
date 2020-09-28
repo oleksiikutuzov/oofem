@@ -10,8 +10,8 @@ public class Node {
 	private Constraint constraint;
 	private Force force;
 	private Vector3D displacement;
-	private Vector3D currentConf;
-	private Vector3D preLoadDispl;
+	private Vector3D currentPosition;
+	private Vector3D initialDisplacement;
 
 	public Node(double x1, double x2, double x3) {
 		this.position = new Vector3D(x1, x2, x3);
@@ -75,19 +75,19 @@ public class Node {
 	}
 
 	public Vector3D getPreLoadDispl() {
-		return preLoadDispl;
+		return initialDisplacement;
 	}
 
-	public void setPreLoadDisplacement(double x1, double x2, double x3) {
-		this.preLoadDispl = new Vector3D(x1, x2, x3);
-		this.currentConf = this.position.add(preLoadDispl);
+	public void setInitialDisplacement(double x1, double x2, double x3) {
+		this.initialDisplacement = new Vector3D(x1, x2, x3);
+		this.currentPosition = this.position.add(initialDisplacement);
 	}
 
 	public Vector3D getCurrentPosition() {
-		if (currentConf == null) {
+		if (currentPosition == null) {
 			return this.position;
 		} else {
-			return currentConf;
+			return currentPosition;
 		}
 	}
 

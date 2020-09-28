@@ -2,7 +2,7 @@ package test;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
+//import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -17,7 +17,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -175,7 +174,7 @@ public class Console_test {
 		scrollpane = new JScrollPane(console);
 		scrollpane.setBorder(null);
 	
-		Component pan = viewer.getContentPane();
+//		Component pan = viewer.getContentPane();
 		
 		JPanel p = new JPanel();
 		p.setSize(new Dimension(300, 400));

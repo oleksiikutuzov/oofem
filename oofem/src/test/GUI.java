@@ -1,8 +1,6 @@
 package test;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +9,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -19,7 +16,6 @@ import javax.swing.JTable;
 import fem.CSVReader;
 import fem.Structure;
 import fem.Visualizer;
-import inf.v3d.obj.Arrow;
 import inf.v3d.view.Viewer;
 
 public class GUI implements ActionListener {

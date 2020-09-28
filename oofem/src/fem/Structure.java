@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import iceb.jnumerics.Array2DMatrix;
+import iceb.jnumerics.ArrayVector;
 import iceb.jnumerics.IMatrix;
 import iceb.jnumerics.MatrixFormat;
 import iceb.jnumerics.QuadraticMatrixInfo;
@@ -20,6 +21,7 @@ public class Structure {
 	private IMatrix kGlobal;
 	private double[] rGlobal;
 	private double[] uGlobal;
+	private double[] uInit;
 	private double[] viewerScales;
 
 	// add node to structure
@@ -75,7 +77,6 @@ public class Structure {
 	// print out information about structure and solution to file
 	public void writeToFile(String path) throws FileNotFoundException {
 
-		
 		PrintWriter writer = new PrintWriter(path);
 
 		writer.println("Listing structure\n");
@@ -132,70 +133,192 @@ public class Structure {
 	// solve system of equations
 	public void solve(boolean lin) {
 
-		// get number of equations
-		int NEQ = enumerateDOFs();
-		// initialize global stiffness matrix
-		kGlobal = new Array2DMatrix(NEQ, NEQ);
-		// assemble global stiffness matrix
-		this.assembleStiffnessMatrix(kGlobal, lin);
-		// initialize global load vector
-		rGlobal = new double[NEQ];
-		// assemble global load vectors
-		assembleLoadVector(NEQ, rGlobal);
+		if (lin == true) {
+			// linear solution
 
-		// create the solver object
-		ILSESolver solver = new GeneralMatrixLSESolver();
-		// info object for coefficient matrix
-		QuadraticMatrixInfo aInfo = solver.getAInfo();
-		// get coefficient matrix
-		IMatrix a = solver.getA();
-		// right hand side
-		double[] b = rGlobal;
-		// initialize solver
-		aInfo.setSize(NEQ);
-		solver.initialize();
-		
-		System.out.println("\nAssembled global force vector");
-		System.out.println(ArrayFormat.format(rGlobal));
-		  
+			// get number of equations
+			int NEQ = enumerateDOFs();
+			// initialize global stiffness matrix
+			kGlobal = new Array2DMatrix(NEQ, NEQ);
+			// assemble global stiffness matrix
 
-		// set values to load vector
-		for (int i = 0; i < NEQ; i++) {
-			for (int j = 0; j < NEQ; j++) {
-				a.set(i, j, this.kGlobal.get(i, j));
+			this.assembleStiffnessMatrix(kGlobal, lin, new double[6], NEQ);
+			// initialize global load vector
+			rGlobal = new double[NEQ];
+			// assemble global load vectors
+			assembleLoadVector(NEQ, rGlobal);
+
+			// create the solver object
+			ILSESolver solver = new GeneralMatrixLSESolver();
+			// info object for coefficient matrix
+			QuadraticMatrixInfo aInfo = solver.getAInfo();
+			// get coefficient matrix
+			IMatrix a = solver.getA();
+			// right hand side
+			double[] b = rGlobal;
+			// initialize solver
+			aInfo.setSize(NEQ);
+			solver.initialize();
+
+			//System.out.println("\nAssembled global force vector");
+			//System.out.println(ArrayFormat.format(rGlobal));
+
+			// set values to load vector
+			for (int i = 0; i < NEQ; i++) {
+				for (int j = 0; j < NEQ; j++) {
+					a.set(i, j, this.kGlobal.get(i, j));
+				}
 			}
+
+			//System.out.println("\nSolving A x = b");
+			//System.out.println("Matrix A");
+			//System.out.println(MatrixFormat.format(a));
+			//System.out.println("Vector b");
+			//System.out.println(ArrayFormat.format(b));
+
+			// after calling solve, b contains the solution
+			try {
+				solver.solve(b);
+			} catch (SolveFailedException e) {
+				System.out.println("Solve failed: " + e.getMessage());
+			}
+
+			// print result
+			//System.out.println("Solution x");
+			//System.out.println(ArrayFormat.format(b));
+
+			this.uGlobal = b;
+			applyDisplacements(NEQ, this.uGlobal);
+			computeForces();
+
+			//System.out.println("\nAssembled global force matrix");
+			//System.out.println(ArrayFormat.format(rGlobal));
+
+			//System.out.println("\nAssembled global matrix");
+			//System.out.println(MatrixFormat.format(kGlobal));
+
+		} else if (lin == false) {
+			// solve nonlinear
+
+			// get number of equations
+			int NEQ = enumerateDOFs();
+			// initialize global stiffness matrix
+			kGlobal = new Array2DMatrix(NEQ, NEQ);
+
+			int steps = 2;
+
+			this.uInit = new double[NEQ];
+
+			/*
+			 * double[] update = new double[NEQ]; for (int i = 0; i < update.length; i++) {
+			 * update[i] = 0; }
+			 */
+
+			this.uInit[0] = 1.183411E-05;
+			this.uInit[1] = -4.750581E-05;
+			this.uInit[2] = -5.567298E-05;
+			this.uInit[3] = 1.775116E-05;
+			this.uInit[4] = -1.024864E-05;
+
+			for (int n = 0; n < steps; n++) {
+				for (int k = 0; k < 2; k++) {
+					// create initial displacements variables for control step
+
+					if (n == 0 && k == 0) {
+						for (int i = 0; i < this.getNumberOfElements(); i++) {
+							this.getElement(i).setDisplacement(this.getElement(i).create_u());
+
+						}
+					}
+
+					// this.uInit = update;
+					assembleInitialDisplacementVector(NEQ, this.uInit);
+
+					System.out.println("\nn = " + n + ", k = " + k);
+
+					System.out.println("Update array: " + ArrayFormat.format(this.uInit));
+
+					System.out.println("u_" + n + "_" + k + ArrayFormat.format(this.uInit));
+
+					// assemble global stiffness matrix
+					this.assembleStiffnessMatrix(kGlobal, lin, this.uInit, NEQ);
+
+					System.out.println("\nTangent matrix");
+					System.out.println(MatrixFormat.format(kGlobal));
+
+					// initialize global load vector
+					rGlobal = new double[NEQ];
+					// assemble global load vectors
+					assembleLoadVector(NEQ, rGlobal);
+
+					// create the solver object
+					ILSESolver solver = new GeneralMatrixLSESolver();
+					// info object for coefficient matrix
+					QuadraticMatrixInfo aInfo = solver.getAInfo();
+					// get coefficient matrix
+					IMatrix a = solver.getA();
+					// right hand side
+					double[] b = rGlobal;
+					// initialize solver
+					aInfo.setSize(NEQ);
+					solver.initialize();
+
+					System.out.println("External force vector \n " + ArrayFormat.format(rGlobal));
+
+					double[] r_int = new double[NEQ];
+					assembleInternalForceVector(NEQ, r_int, this.uInit);
+					System.out.println("Internal forces vector \n" + ArrayFormat.format(r_int));
+
+					// set values to load vector
+					for (int i = 0; i < NEQ; i++) {
+						for (int j = 0; j < NEQ; j++) {
+							a.set(i, j, this.kGlobal.get(i, j));
+						}
+					}
+
+					// System.out.println("\nSolving A x = b");
+					// System.out.println("Matrix A");
+					// System.out.println(MatrixFormat.format(a));
+					// System.out.println("Vector b");
+					// System.out.println(ArrayFormat.format(b));
+
+					// after calling solve, b contains the solution
+					try {
+						solver.solve(b);
+					} catch (SolveFailedException e) {
+						System.out.println("Solve failed: " + e.getMessage());
+					}
+
+					// print result
+					// System.out.println("Solution x");
+					// System.out.println(ArrayFormat.format(b));
+
+					this.uGlobal = b;
+					this.uInit = b;
+
+					applyDisplacements(NEQ, this.uGlobal);
+					computeForces();
+
+					System.out.println("Increment " + ArrayFormat.format(b));
+
+					ArrayVector tmp = new ArrayVector(NEQ);
+					ArrayVector tmp2 = new ArrayVector(NEQ);
+					tmp.assignFrom(b);
+					tmp2.assignFrom(this.uInit);
+
+					this.uInit = tmp.add(tmp2).toArray();
+
+					this.applyInitialDisplacements(NEQ, this.uInit);
+
+					System.out.println("Update    " + ArrayFormat.format(this.uInit));
+
+					// System.out.println("\nAssembled global force matrix");
+					// System.out.println(ArrayFormat.format(rGlobal));
+
+				}
+			}
+
 		}
-
-		
-		  System.out.println("\nSolving A x = b");
-		  System.out.println("Matrix A"); System.out.println(MatrixFormat.format(a));
-		  System.out.println("Vector b"); System.out.println(ArrayFormat.format(b));
-		 
-
-		// after calling solve, b contains the solution
-		try {
-			solver.solve(b);
-		} catch (SolveFailedException e) {
-			System.out.println("Solve failed: " + e.getMessage());
-		}
-
-		
-		  //print result 
-		  System.out.println("Solution x");
-		  System.out.println(ArrayFormat.format(b));
-		 
-
-		this.uGlobal = b;
-		applyDisplacements(NEQ, this.uGlobal);
-		computeForces();
-
-		
-		  System.out.println("\nAssembled global force matrix");
-		  System.out.println(ArrayFormat.format(rGlobal));
-		  
-		  System.out.println("\nAssembled global matrix");
-		  System.out.println(MatrixFormat.format(kGlobal));
-		 
 	}
 
 //	count degrees of freedom
@@ -225,8 +348,54 @@ public class Structure {
 		}
 	}
 
+	// assemble u_e vector
+	private void assembleInitialDisplacementVector(int NEQ, double[] u_e) {
+		for (int i = 0; i < this.getNumberOfElements(); i++) {
+			if (this.getElement(i).getDisplacement().toArray() != null) {
+				for (int j = 0; j < NEQ; j++) {
+					for (int k = 0; k < 6; k++) {
+						if (this.getElement(i).getDOFNumbers()[k] == j) {
+							// u_e.set(j, this.getElement(i).getDisplacement().toArray()[k]);
+							u_e[j] = this.getElement(i).getDisplacement().toArray()[k];
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	// assemble internal force vector
+	private void assembleInternalForceVector(int NEQ, double[] vect, double[] u_e) {
+		double[] tmp = new double[6];
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			for (int k = 0; k < 3; k++) {
+				for (int j = 0; j < NEQ; j++) {
+					if (this.getElement(i).getDOFNumbers()[k] == j) {
+						tmp[k] = u_e[j];
+					} else if (this.getElement(i).getDOFNumbers()[k] == -1) {
+						tmp[k] = 0;
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < this.getNumberOfElements(); i++) {
+			if (this.getElement(i).getDisplacement().toArray() != null) {
+				for (int j = 0; j < NEQ; j++) {
+					for (int k = 0; k < 6; k++) {
+						if (this.getElement(i).getDOFNumbers()[k] == j) {
+							vect[j] = this.getElement(i)
+									.computeInternalForce(NEQ, tmp, this.getElement(i).getDOFNumbers()).toArray()[k];
+						}
+					}
+				}
+			}
+		}
+	}
+
 	// assembly of a stiffness matrix
-	private void assembleStiffnessMatrix(IMatrix kGlobal, boolean lin) {
+	private void assembleStiffnessMatrix(IMatrix kGlobal, boolean lin, double[] uInit, int NEQ) {
 		for (int i = 0; i < this.getNumberOfElements(); i++) {
 			for (int j = 0; j < 6; j++) {
 				int n = this.getElement(i).getDOFNumbers()[j];
@@ -235,9 +404,11 @@ public class Structure {
 						int m = this.getElement(i).getDOFNumbers()[k];
 						if (m >= 0) {
 							if (lin == true) {
-							kGlobal.add(n, m, this.getElement(i).computeStiffnessMatrix().get(j, k));
+								kGlobal.add(n, m, this.getElement(i).computeStiffnessMatrix().get(j, k));
 							} else if (lin == false) {
-								kGlobal.add(n, m, this.getElement(i).computeNonlinearStiffnessMatrix().get(j, k));
+								kGlobal.add(n, m, this.getElement(i)
+										.computeTangentMatrix(NEQ, this.getElement(i).getDOFNumbers(), this.uInit)
+										.get(j, k));
 							}
 						}
 					}
@@ -264,6 +435,26 @@ public class Structure {
 				}
 			}
 			this.getNode(i).setDisplacement(disp);
+		}
+	}
+
+	// after solution set the displacements to each node
+	private void applyInitialDisplacements(int NEQ, double[] uGlobal) {
+		double[] disp = new double[6];
+		for (int i = 0; i < this.getNumberOfElements(); i++) {
+			for (int k = 0; k < 6; k++) {
+				for (int j = 0; j < NEQ; j++) {
+					if (this.getElement(i).getDOFNumbers()[k] == j) {
+						disp[k] = uGlobal[j];
+					} else if (this.getElement(i).getDOFNumbers()[k] == -1) {
+						disp[k] = 0;
+					}
+				}
+			}
+			ArrayVector ret = new ArrayVector(6);
+			ret.assignFrom(disp);
+			// System.out.println(ArrayFormat.format(ret.toArray()));
+			this.getElement(i).setDisplacement(ret);
 		}
 	}
 
@@ -326,18 +517,17 @@ public class Structure {
 	public void setViewerScales(double[] viewerScales) {
 		this.viewerScales = viewerScales;
 	}
-	
+
 	public void editNode(int ind, double x1, double x2, double x3) {
 		this.nodes.get(ind).setPosition(x1, x2, x3);
 	}
-	
-	public void editElement (int ind, double e, double a, int n1, int n2) {
+
+	public void editElement(int ind, double e, double a, int n1, int n2) {
 		this.elements.get(ind).setValues(e, a, this.getNode(n1), this.getNode(n2));
 	}
-	
+
 	public void deleteElement(int id) {
 		this.elements.remove(id);
 	}
-	
-	
+
 }

@@ -18,7 +18,7 @@ public class SmallTetraeder {
 		double e = 2.1e11;
 		Constraint c1 = new Constraint(false, false, false);
 		Constraint c2 = new Constraint(true, true, false);
-		Force f1 = new Force(0, -20e3, -100e3);
+		Force f1 = new Force(0, -4e3, -2e4);
 
 		// create nodes
 		Node n1 = struct.addNode(0.0, 0.0, lb * Math.sqrt(2.0 / 3.0));
@@ -31,7 +31,7 @@ public class SmallTetraeder {
 		n2.setConstraint(c1);
 		n3.setConstraint(c1);
 		n4.setConstraint(c2);
-		n1.setPreLoadDisplacement(0, 10e-4, 10e-3);
+		//n1.setPreLoadDisplacement(0, 10e-4, 10e-3);
 
 		// create elements
 		struct.addElement(e, a, 0, 1);
@@ -49,7 +49,7 @@ public class SmallTetraeder {
 	public static void main(String[] args) {
 		Viewer viewer = new Viewer();
 		Structure struct = createStructure();
-		struct.solve(false);
+		struct.solve(true);
 //		struct.printStructure();
 		struct.printResults();
 		Visualizer viz = new Visualizer(struct, viewer);

@@ -386,7 +386,7 @@ public class Console {
 						println("Calculation done in " + elapsedTimeMillis + " ms\n", false);
 					}
 					break;
-					
+
 				case "SOLVE_NONLINEAR":
 					if (this.struct == null) {
 						println("You need to create structure first", false, warn);
@@ -399,7 +399,7 @@ public class Console {
 					break;
 
 				default:
-					println("Wrong command 2!", trace, new Color(250, 50, 50));
+					println("Wrong command!", trace, new Color(250, 50, 50));
 					break;
 				}
 				break;
@@ -427,6 +427,10 @@ public class Console {
 					}
 					break;
 
+				case "PRINT":
+					printResult();
+					break;
+
 				case "EXPORT":
 					// add current date and time
 					DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
@@ -448,13 +452,30 @@ public class Console {
 					break;
 
 				default:
-					println("Wrong command 2!", trace, new Color(250, 50, 50));
+					println("Wrong command!", trace, new Color(250, 50, 50));
 					break;
 				}
 				break;
+				
+			case "HELP":
+				println("Currently supported commands:\n", false);
+				println("structure import", false);
+				println("          importbypath [path to file]", false);
+				println("          new", false);
+				println("          print", false);
+				println("          draw", false);
+				println("          add node [x1] [x2] [x3]", false);
+				println("              element [E] [A] [n1] [n2]", false);
+				println("          modify node [id] [x1] [x2] [x3]", false);
+				println("                 element [id] [E] [A] [n1] [n2]", false);
+				println("          solve_linear", false);
+				println("\nsolution  draw", false);
+				println("          export", false);
+				println("          print", false);
+				break;
 
 			default:
-				println("Wrong command 1!", trace, new Color(250, 50, 50));
+				println("Wrong command!", trace, new Color(250, 50, 50));
 				break;
 			}
 
