@@ -131,7 +131,6 @@ public class Console {
 					try {
 						doCommand(text);
 					} catch (FileNotFoundException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					scrollBottom();
@@ -296,6 +295,18 @@ public class Console {
 
 					println("Structure import done!", false);
 					break;
+					
+				case "SCALE":
+					switch (commands[2].toUpperCase()) {
+					case "ARROW_SHAFT":
+						this.viz.setArrowShaftScale(Double.parseDouble(commands[3]));
+						break;
+						
+					default:
+						println("Wrong input", false, warn);
+						break;
+					}
+				
 
 				case "ADD":
 					if (this.struct == null) {
@@ -327,6 +338,33 @@ public class Console {
 								print("One of the nodes does not exist", false, warn);
 							}
 							break;
+							
+						case "FORCE":
+							try {
+								struct.addForce(Integer.parseInt(commands[3]), Double.parseDouble(commands[4]),
+										Double.parseDouble(commands[5]), Double.parseDouble(commands[6]));
+							} catch (NumberFormatException e) {
+								print("Please enter numbers", false, warn);
+							} catch (NullPointerException e) {
+								print("Your input is not full", false, warn);
+							} catch (IndexOutOfBoundsException e) {
+								print("One of the nodes does not exist", false, warn);
+							}
+							break;
+							
+							
+						case "CONSTRAINT":
+							try {
+								struct.addConstraint(Integer.parseInt(commands[3]), Boolean.parseBoolean(commands[4]),
+										Boolean.parseBoolean(commands[5]), Boolean.parseBoolean(commands[6]));
+							} catch (NumberFormatException e) {
+								print("Please enter numbers", false, warn);
+							} catch (NullPointerException e) {
+								print("Your input is not full", false, warn);
+							} catch (IndexOutOfBoundsException e) {
+								print("One of the nodes does not exist", false, warn);
+							}
+							break;
 
 						default:
 							println("Wrong input", false, warn);
@@ -335,6 +373,7 @@ public class Console {
 					}
 					break;
 
+				
 				case "MODIFY":
 					if (this.struct == null) {
 						println("You need to create structure first", false, warn);
@@ -366,6 +405,32 @@ public class Console {
 								print("Your input is not full", false, warn);
 							} catch (IndexOutOfBoundsException e) {
 								print("One of the nodes does not exist or input isn't full", false, warn);
+							}
+							break;
+							
+						case "FORCE":
+							try {
+								struct.editForce(Integer.parseInt(commands[3]), Double.parseDouble(commands[4]),
+										Double.parseDouble(commands[5]), Double.parseDouble(commands[6]));
+							} catch (NumberFormatException e) {
+								print("Please enter numbers", false, warn);
+							} catch (NullPointerException n) {
+								print("Your input is not full", false, warn);
+							} catch (IndexOutOfBoundsException e) {
+								print("One of the values does not exist or input isn't full", false, warn);
+							}
+							break;
+							
+						case "CONSTRAINT":
+							try {
+								struct.editConstraint(Integer.parseInt(commands[3]), Boolean.parseBoolean(commands[4]),
+										Boolean.parseBoolean(commands[5]), Boolean.parseBoolean(commands[6]));
+							} catch (NumberFormatException e) {
+								print("Please enter numbers", false, warn);
+							} catch (NullPointerException n) {
+								print("Your input is not full", false, warn);
+							} catch (IndexOutOfBoundsException e) {
+								print("One of the values does not exist or input isn't full", false, warn);
 							}
 							break;
 
@@ -466,8 +531,12 @@ public class Console {
 				println("          draw", false);
 				println("          add node [x1] [x2] [x3]", false);
 				println("              element [E] [A] [n1] [n2]", false);
-				println("          modify node [id] [x1] [x2] [x3]", false);
-				println("                 element [id] [E] [A] [n1] [n2]", false);
+				println("              force [node id] [r1] [r2] [r3]", false);
+				println("              constraint [node id] [u1] [u2] [u3] (boolean if free)", false);
+				println("          modify node [node id] [x1] [x2] [x3]", false);
+				println("                 element [element id] [E] [A] [n1] [n2]", false);
+				println("                 force [node id] [r1] [r2] [r3]", false);
+				println("                 constraint [node id] [u1] [u2] [u3]", false);
 				println("          solve_linear", false);
 				println("\nsolution  draw", false);
 				println("          export", false);
@@ -500,6 +569,7 @@ public class Console {
 	}
 
 	public void printStructure() {
+		println("-------------------------------------------------", false);
 		println("Listing structure\n", false);
 		println("Nodes", false);
 		println(ArrayFormat.iFormat("  idx            x1             x2             x3"), false);

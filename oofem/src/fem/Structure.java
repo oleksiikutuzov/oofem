@@ -38,6 +38,18 @@ public class Structure {
 		this.elements.add(element);
 		return element;
 	}
+	
+	public Force addForce(int id, double r1, double r2, double r3) {
+		Force force = new Force(r1, r2, r3);
+		this.getNode(id).setForce(force);
+		return force;
+	}
+	
+	public Constraint addConstraint(int id, boolean u1, boolean u2, boolean u3) {
+		Constraint constraint = new Constraint(u1, u2, u3);
+		this.getNode(id).setConstraint(constraint);
+		return constraint;
+	}
 
 	// print out information about structure
 	public void printStructure() {
@@ -561,6 +573,14 @@ public class Structure {
 
 	public void deleteElement(int id) {
 		this.elements.remove(id);
+	}
+	
+	public void editForce(int ind, double r1, double r2, double r3) {
+		this.nodes.get(ind).getForce().setValues(r1, r2, r3);
+	}
+	
+	public void editConstraint(int ind, boolean u1, boolean u2, boolean u3) {
+		this.nodes.get(ind).getConstraint().setValues(u1, u2, u3);
 	}
 
 }

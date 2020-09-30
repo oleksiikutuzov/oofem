@@ -28,4 +28,10 @@ public class Force {
 	public Vector3D toVector3D() {
 		return new Vector3D(this.components);
 	}
+	
+	public void setValues(double r1, double r2, double r3) {
+		this.components[0] = r1;
+		this.components[1] = r2;
+		this.components[2] = r3;
+	}
 }

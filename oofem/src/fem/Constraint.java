@@ -31,4 +31,10 @@ public class Constraint {
 	public void print() {
 		System.out.println(ArrayFormat.format(this.getStringArray()));
 	}
+	
+	public void setValues(boolean u1, boolean u2, boolean u3) {
+		this.free[0] = u1;
+		this.free[1] = u2;
+		this.free[2] = u3;
+	}
 }
