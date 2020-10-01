@@ -24,50 +24,50 @@ You can add Node to the structure using command
 ```
 structure add node [x1] [x2] [x3]
 ```
-*with* **x1, x2, x3** *coordinates of node*
+*with* **x1, x2, x3** *coordinates of node.*
 
 You can add an Element using command
 ```
 structure add element [E] [A] [n1] [n2]
 ```
-*with* **E** *the Young modulus,* **A** *the cross section area of the element and* **n1** *and* **n2** *the indices of the nodes*
+*with* **E** *the Young modulus,* **A** *the cross section area of the element and* **n1** *and* **n2** *the indices of the nodes.*
 
 You can assign a Force to a node
 ```
 structure add force [node id] [r1] [r2] [r3]
 ```
-*with* **node id** *the index of the node and* **r1, r2, r3** *the components of the force*
+*with* **node id** *the index of the node and* **r1, r2, r3** *the components of the force.*
 
 You can assign a Constraint to a node
 ```
 structure add constraint [node id] [u1] [u2] [u3]
 ```
-*with* **node id** *the index of the node and* **u1, u2, u3** *the components of the constraint provided as boolean values for the expression "if free"*
+*with* **node id** *the index of the node and* **u1, u2, u3** *the components of the constraint provided as boolean values for the statement "if free".*
 
 ### Modifying structure components
 You can modify Node of the structure using command
 ```
 structure modify node [node id] [x1] [x2] [x3]
 ```
-*with* **node id** *the index of the node and* **x1, x2, x3** *coordinates of node*
+*with* **node id** *the index of the node and* **x1, x2, x3** *coordinates of node.*
 
 You can modify an Element using command
 ```
 structure modify element [element id] [E] [A] [n1] [n2]
 ```
-*with* **element id** *the index of the element,* **E** *the Young modulus,* **A** *the cross section area of the element and* **n1** *and* **n2** *the indices of the nodes*
+*with* **element id** *the index of the element,* **E** *the Young modulus,* **A** *the cross section area of the element and* **n1** *and* **n2** *the indices of the nodes.*
 
 You can assign a Force to a node
 ```
 structure add force [node id] [r1] [r2] [r3]
 ```
-*with* **node id** *the index of the node and* **r1, r2, r3** *the components of the force*
+*with* **node id** *the index of the node and* **r1, r2, r3** *the components of the force.*
 
 You can assign a Constraint to a node
 ```
 structure add constraint [node id] [u1] [u2] [u3]
 ```
-*with* **node id** *the index of the node and* **u1, u2, u3** *the components of the constraint provided as boolean values for the expression "if free"*
+*with* **node id** *the index of the node and* **u1, u2, u3** *the components of the constraint provided as boolean values for the statement "if free".*
 
 ### Further structure commands
 Printing out the structure data to the console
