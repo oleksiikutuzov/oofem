@@ -16,14 +16,6 @@ public class Test4 {
 		n1.setConstraint(c1);
 		n2.setForce(f1);
 // print
-		System.out.println("Constraint (u1, u2, u3)");
-		n1.getConstraint().print();
-		System.out.println("Force (r1, r2, r3)");
-		n2.getForce().print();
-		System.out.println("Nodes (x1, x2, x3)");
-		n1.print();
-		n2.print();
-		System.out.println("Element (E, A, L)");
-		e1.print();
+		
 	}
 }

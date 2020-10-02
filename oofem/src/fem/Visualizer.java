@@ -12,13 +12,13 @@ import inf.v3d.view.Viewer;
 
 public class Visualizer {
 
-	private double displacementScale = 1;
-	private double radiusScale = 1;
-	private double constraintScale = 1;
-	private double arrowRadiusScale = 1;
-	private double arrowShaftScale = 1;
-	private double elementForceScale = 1;
-	private double nodeScale = 1;
+	private double displacementScale = 300;
+	private double radiusScale = 2;
+	private double constraintScale = 0.8;
+	private double arrowRadiusScale = 0.07;
+	private double arrowShaftScale = 0.00004;
+	private double elementForceScale = 0.000001;
+	private double nodeScale = radiusScale * 2;
 	private Structure structure;
 	private Viewer viewer;
 
@@ -131,7 +131,7 @@ public class Visualizer {
 //			System.out.println(ArrayFormat.format(node2.toArray()));
 
 			cs.addCylinder(node1.toArray(), node2.toArray(),
-					Math.sqrt(this.getStructure().getElement(i).getArea() / Math.PI));
+					Math.sqrt(this.getStructure().getElement(i).getArea() / Math.PI) * this.radiusScale);
 			Color green = new Color(0, 255, 0);
 			cs.setColor(green);
 		}

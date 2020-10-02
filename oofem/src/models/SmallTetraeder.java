@@ -1,5 +1,8 @@
 package models;
 
+import java.awt.List;
+import java.util.Arrays;
+
 import fem.Constraint;
 import fem.Force;
 import fem.Node;
@@ -49,19 +52,32 @@ public class SmallTetraeder {
 	public static void main(String[] args) {
 		Viewer viewer = new Viewer();
 		Structure struct = createStructure();
-		struct.solve(true);
-//		struct.printStructure();
+		struct.solve(3);
+		struct.printStructure();
 		struct.printResults();
 		Visualizer viz = new Visualizer(struct, viewer);
+		
+		// calculate radius scale
+		double radius;
+		double[] elementsRad = new double[struct.getNumberOfElements()];
+		for (int i = 0; i < struct.getNumberOfElements(); i++) {
+			elementsRad[i] = struct.getElement(i).getArea();
+		}
+		Arrays.sort(elementsRad);
+		System.out.println("Biggest value is " + elementsRad[elementsRad.length-1]);
+		radius = Math.sqrt(elementsRad[elementsRad.length-1] * 4 / 0.014);
+		
+//		viz.setRadiusScale(2);
 		viz.drawElements();
-		viz.setConstraintScale(0.8);
+		
+//		viz.setConstraintScale(0.8);
 		viz.drawConstraints();
-		viz.setArrowShaftScale(0.000025);
-		viz.setArrowRadiusScale(0.1);
+//		viz.setArrowShaftScale(0.000025);
+	//	viz.setArrowRadiusScale(0.1);
 		viz.drawForces();
 		viz.setDisplacementScale(3e4);
 		viz.drawDisplacements();
-		viz.setElementForceScale(1e-5);
+		//viz.setElementForceScale(1e-5);
 		viz.drawElementForces();
 		viewer.setVisible(true);
 

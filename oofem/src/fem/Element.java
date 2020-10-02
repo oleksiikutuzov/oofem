@@ -17,6 +17,7 @@ public class Element {
 	private Node node1;
 	private Node node2;
 	private double[] displacement = new double[6];
+	private double[] initialDisplacement = new double[6];
 
 	public Element(double e, double a, Node n1, Node n2) {
 		this.area = a;
@@ -207,15 +208,15 @@ public class Element {
 	public IVectorRO create_u() {
 		for (int i = 0; i < 6; i++) {
 			if (dofNumbers[i] == -1) {
-				this.displacement[i] = 0;
+				this.initialDisplacement[i] = 0;
 			}
 		}
 
 		ArrayVector u = new ArrayVector(6);
 
 		for (int i = 0; i < 3; i++) {
-			u.set(i, this.displacement[i]);
-			u.set(i + 3, this.displacement[i + 3]);
+			u.set(i, this.initialDisplacement[i]);
+			u.set(i + 3, this.initialDisplacement[i + 3]);
 		}
 		IVectorRO ret = u;
 		return ret;
@@ -257,13 +258,14 @@ public class Element {
 		return ret;
 	}
 
-	public IVectorRO computeInternalForce(int NEQ, double[] u_e_2, int[] DOFNumbers) {
+	public IVectorRO computeInternalForce(int NEQ, double[] u_e_2) {
+		
 		double[] tmp = new double[6];
 		for (int k = 0; k < 6; k++) {
 			for (int j = 0; j < NEQ; j++) {
-				if (DOFNumbers[k] == j) {
+				if (this.dofNumbers[k] == j) {
 					tmp[k] = u_e_2[j];
-				} else if (DOFNumbers[k] == -1) {
+				} else if (this.dofNumbers[k] == -1) {
 					tmp[k] = 0;
 				}
 			}
@@ -271,25 +273,31 @@ public class Element {
 
 		ArrayVector tmp2 = new ArrayVector(tmp);
 		IVectorRO u_e = tmp2;
+		
+		// System.out.println("u_e vector: \n " + ArrayFormat.format(u_e.toArray()));
 
 		IVectorRO X = this.create_X();
+		
+		// System.out.println("X vector \n" + ArrayFormat.format(X.toArray()));
 
 		IMatrixRO A = this.getAMatrix();
 		this.computeS11(u_e);
 
 		IVectorRO delta_E11 = A.multiply(X.add(u_e));
 		IVectorRO r = delta_E11.multiply(this.area * S11 / this.getLength());
+		
+		// System.out.println("Vector r \n" + ArrayFormat.format(r.toArray()) + "\n");
 		return r;
 	}
 
-	public IMatrixRO computeTangentMatrix(int NEQ, int[] DOFNumbers, double[] u_e_1) {
+	public IMatrixRO computeTangentMatrix(int NEQ, double[] u_e_1) {
 
 		double[] tmp = new double[6];
 		for (int k = 0; k < 6; k++) {
 			for (int j = 0; j < NEQ; j++) {
-				if (DOFNumbers[k] == j) {
+				if (this.dofNumbers[k] == j) {
 					tmp[k] = u_e_1[j];
-				} else if (DOFNumbers[k] == -1) {
+				} else if (this.dofNumbers[k] == -1) {
 					tmp[k] = 0;
 				}
 			}
@@ -314,9 +322,20 @@ public class Element {
 		IVectorRO ret = disp;
 		return ret;
 	}
+	
+	public IVectorRO getInitialDisplacement() {
+		ArrayVector disp = new ArrayVector(6);
+		disp.assignFrom(this.initialDisplacement);
+		IVectorRO ret = disp;
+		return ret;
+	}
 
 	public void setDisplacement(IVectorRO disp) {
 		this.displacement = disp.toArray();
+	}
+	
+	public void setInitialDisplacement(IVectorRO disp) {
+		this.initialDisplacement = disp.toArray();
 	}
 
 }
