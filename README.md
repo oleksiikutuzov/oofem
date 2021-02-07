@@ -42,7 +42,7 @@ You can assign a Constraint to a node
 ```
 structure add constraint [node id] [u1] [u2] [u3]
 ```
-*with* **node id** *the index of the node and* **u1, u2, u3** *the components of the constraint provided as boolean values for the statement "if free".*
+*with* **node id** *the index of the node and* **u1, u2, u3** *the components of the constraint provided as boolean values for the expression "if free".*
 
 ### Modifying structure components
 You can modify Node of the structure using command
@@ -67,7 +67,7 @@ You can assign a Constraint to a node
 ```
 structure add constraint [node id] [u1] [u2] [u3]
 ```
-*with* **node id** *the index of the node and* **u1, u2, u3** *the components of the constraint provided as boolean values for the statement "if free".*
+*with* **node id** *the index of the node and* **u1, u2, u3** *the components of the constraint provided as boolean values for the expression "if free".*
 
 ### Further structure commands
 Printing out the structure data to the console
@@ -80,10 +80,16 @@ Open viewer with the structure
 structure draw
 ```
 
-Get the linear solution of the structure
+Get linear solution of the structure
 ```
 structure solve_linear
 ```
+
+Get nonlinear solution of the structure
+```
+structure solve_nonlinear [step number]
+```
+*by default* **step number** *is set to 1, but you can enter any specific amount of loading steps. The result is shown for the last one.*
 
 ### Solution commands
 Printing out the solution
