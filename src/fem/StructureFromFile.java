@@ -10,8 +10,8 @@ public class StructureFromFile {
 
 	public static void main(String[] args) throws IOException {
 
-		// initialize Viewer and reader
-		Viewer viewer = new Viewer();
+		boolean GRAPH = false;
+		boolean WRITE_TO_FILE = false;
 
 		// define path to the model
 		String modelPath = "src/models/DomeTruss.csv";
@@ -19,6 +19,9 @@ public class StructureFromFile {
 
 		// create Structure by getting values from file
 		Structure struct = reader.getValues();
+
+		// initialize Viewer
+		Viewer viewer = new Viewer();
 		// initialize Visualizer
 		Visualizer viz = new Visualizer(struct, viewer);
 		// set Scales to values from file
@@ -31,29 +34,43 @@ public class StructureFromFile {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		Date date = new Date();
 		String outputPath = "";
-		for (int i = 0; i < part1.length - 1; i++) {
-			outputPath = outputPath.concat(part1[i]);
-			outputPath = outputPath.concat("/");
+
+		if (WRITE_TO_FILE) {
+			for (int i = 0; i < part1.length - 1; i++) {
+				outputPath = outputPath.concat(part1[i]);
+				outputPath = outputPath.concat("/");
+			}
 		}
 
 		// count time of calculation
 		long start = System.currentTimeMillis();
 		struct.solve();
 		long elapsedTimeMillis = System.currentTimeMillis() - start;
-		System.out.println("Calculation done in " + elapsedTimeMillis + " ms\n");
 
 		// print structure and result to console
 		struct.printStructure();
 		struct.printResults();
 
-		// print structure and result to file
-		struct.writeToFile(outputPath + part2[0] + "_solution_" + df.format(date) + ".txt");
+		if (WRITE_TO_FILE) {
+			// print structure and result to file
+			struct.writeToFile(outputPath + part2[0] + "_solution_" + df.format(date) + ".txt");
+		}
 
+		if (GRAPH) {
+			drawAfter(viz, viewer);
+		}
+		
+		System.out.println("Calculation done in " + elapsedTimeMillis + " ms\n");
+	}
+
+	static void drawAfter(Visualizer viz, Viewer viewer) {
 		// overwrite scale values
-		viz.setRadiusScale(2); viz.setConstraintScale(0.6);
-		viz.setArrowShaftScale(1e-3); viz.setArrowRadiusScale(1e-1);
-		viz.setDisplacementScale(1e2); viz.setElementForceScale(1e-6);
-
+		viz.setRadiusScale(2);
+		viz.setConstraintScale(0.6);
+		viz.setArrowShaftScale(1e-3);
+		viz.setArrowRadiusScale(1e-1);
+		viz.setDisplacementScale(1e2);
+		viz.setElementForceScale(1e-6);
 
 		viz.setNodeScale(2e-1);
 
