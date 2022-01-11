@@ -3,6 +3,7 @@ package fem;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import iceb.jnumerics.Array2DMatrix;
 import iceb.jnumerics.ArrayVector;
@@ -198,7 +199,7 @@ public class Structure {
 				double[] intForces = new double[NEQ];
 				assembleInternalForceVector(NEQ, intForces, this.uInit);
 
-				//System.out.println("Internal forces\n" + ArrayFormat.format(intForces));
+				// System.out.println("Internal forces\n" + ArrayFormat.format(intForces));
 
 				// external forces
 
@@ -486,7 +487,46 @@ public class Structure {
 		for (int i = 0; i < this.getNumberOfElements(); i++) {
 			System.out.println(ArrayFormat.format(i) + ArrayFormat.format(this.getElement(i).computeForce()));
 		}
+	}
 
+	public double getLargestDisplacement() {
+		double[] forces = new double[this.getNumberOfElements()];
+		for (int i = 0; i < this.getNumberOfElements(); i++) {
+			forces[i] = this.getElement(i).computeForce();
+		}
+		Arrays.sort(forces);
+		return forces[forces.length - 1];
+	}
+	
+	public double getLargestFore() {
+		double[] displacements = new double[this.getNumberOfNodes() * 3];
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			displacements[i] = this.getNode(i).getDisplacement().getX1(); 
+			displacements[i + 1] = this.getNode(i).getDisplacement().getX2(); 
+			displacements[i + 2] = this.getNode(i).getDisplacement().getX3(); 
+		}
+		Arrays.sort(displacements);
+		return displacements[displacements.length - 1];
+	}
+	
+	public void printLargestValues() {		 
+		double[] displacements = new double[this.getNumberOfNodes() * 3];
+		for (int i = 0; i < this.getNumberOfNodes(); i++) {
+			displacements[i] = this.getNode(i).getDisplacement().getX1(); 
+			displacements[i + 1] = this.getNode(i).getDisplacement().getX2(); 
+			displacements[i + 2] = this.getNode(i).getDisplacement().getX3(); 
+		}
+		Arrays.sort(displacements);
+		
+		double[] forces = new double[this.getNumberOfElements()];
+		for (int i = 0; i < this.getNumberOfElements(); i++) {
+			forces[i] = this.getElement(i).computeForce();
+		}
+		Arrays.sort(forces);
+		
+		System.out.println("\nListing largest values");
+		System.out.println("Displacements: " + displacements[displacements.length - 1]);
+		System.out.println("Forces: " + forces[forces.length - 1]);
 	}
 
 	// returns number of Nodes in the structure
@@ -550,5 +590,4 @@ public class Structure {
 	public void editConstraint(int ind, boolean u1, boolean u2, boolean u3) {
 		this.nodes.get(ind).getConstraint().setValues(u1, u2, u3);
 	}
-
 }
