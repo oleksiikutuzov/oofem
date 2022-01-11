@@ -10,7 +10,7 @@ public class StructureFromFile {
 
 	public static void main(String[] args) throws IOException {
 
-		boolean GRAPH = false;
+//		boolean GRAPH = false;
 		boolean WRITE_TO_FILE = false;
 
 		// define path to the model
@@ -20,12 +20,12 @@ public class StructureFromFile {
 		// create Structure by getting values from file
 		Structure struct = reader.getValues();
 
-		// initialize Viewer
-		Viewer viewer = new Viewer();
-		// initialize Visualizer
-		Visualizer viz = new Visualizer(struct, viewer);
-		// set Scales to values from file
-		viz.transferScalesValues();
+//		// initialize Viewer
+//		Viewer viewer = new Viewer();
+//		// initialize Visualizerd
+//		Visualizer viz = new Visualizer(struct, viewer);
+//		// set Scales to values from file
+//		viz.transferScalesValues();
 
 		// set path to output file to the same folder
 		String[] part1 = modelPath.split("/");
@@ -56,9 +56,9 @@ public class StructureFromFile {
 			struct.writeToFile(outputPath + part2[0] + "_solution_" + df.format(date) + ".txt");
 		}
 
-		if (GRAPH) {
-			drawAfter(viz, viewer);
-		}
+//		if (GRAPH) {
+//			drawAfter(viz, viewer);
+//		}
 		
 		System.out.println("Calculation done in " + elapsedTimeMillis + " ms\n");
 	}
