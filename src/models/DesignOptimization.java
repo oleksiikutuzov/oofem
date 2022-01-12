@@ -14,8 +14,8 @@ public class DesignOptimization {
 	private static double topWidth = 2.0;
 	private static double bottomWidth = 4.0;
 	private static double totalHeight = 6.0;
-	private static int numLevels = 5;
-	private static int numRows = 6;
+	private static int numLevels = 2;
+	private static int numRows = 4;
 	private static double levelHeight = totalHeight / numLevels;
 	private static double atan = (2 * totalHeight) / (bottomWidth - topWidth);
 	private static double alpha = Math.atan(atan);
@@ -46,7 +46,7 @@ public class DesignOptimization {
 	}
 
 	public static void addElementsOnLevels(double e, double a, Structure struct) {
-		for (int level = 0; level < numLevels + 1; level++) {
+		for (int level = 1; level < numLevels + 1; level++) {
 			for (int i = 0; i < onLevel - 1; i++) {
 				struct.addElement(e, a, i + onLevel * level, (i + onLevel * level) + 1);
 			}
@@ -80,6 +80,10 @@ public class DesignOptimization {
 		}
 	}
 	
+	public static void addForce(Structure struct, Force force) {
+		struct.getNode(struct.getNumberOfNodes() - 1).setForce(force);
+	}
+
 	public static void addConstraints(Structure struct) {
 		struct.addConstraint(0, false, false, false);
 		for (int i = 1; i < onLevel; i++) {
@@ -87,87 +91,66 @@ public class DesignOptimization {
 		}
 	}
 
+	public static void addTop(double e, double a, Structure struct) {
+		struct.addNode(0, 0, totalHeight + 1);
+		for (int i = 0; i < onLevel; i++) {
+			struct.addElement(e, a, numRows * 4 * numLevels + i, struct.getNumberOfNodes() - 1);
+		}
+
+	}
+
 	public static Structure createStructure() {
 		Structure struct = new Structure();
-		double lb = 15.0;
-		double r = 457.2 / 2000;
-		double t = 10.0 / 1000;
+		// value for diameter in cm converted to m
+		double r = 20.0 / 200;
 
-		double a = Math.PI * (Math.pow(r, 2) - Math.pow(r - t, 2));
-		double a2 = Math.PI * (Math.pow(r / 2, 2) - Math.pow(r / 2 - t / 2, 2));
+		double a = Math.PI * Math.pow(r, 2);
+		double a2 = a / 2;
 		double e = 2.1e11;
-		Constraint c1 = new Constraint(false, false, false);
-		Constraint c2 = new Constraint(true, true, false);
 
+		// In Newtons
 		double totalForce = -12e3;
 		double nodeForce = totalForce / (numRows * 4);
 		Force f1 = new Force(0, 0, nodeForce);
-		
-
-//		System.out.println("Nodal force is " + f1.getComponent(2));
 
 		addNodes(struct);
 		addElementsOnLevels(e, a, struct);
 		addElementsVertical(e, a, struct);
 		addCrossBraces(e, a2, struct);
-		addForces(struct, f1);
 		addConstraints(struct);
+		addTop(e, a, struct);
+		addForce(struct, f1);
 
-
-		// create nodes
-//		Node n1 = struct.addNode(0.0, 0.0, lb * Math.sqrt(2.0 / 3.0));
-//		Node n2 = struct.addNode(0.0, lb / Math.sqrt(3), 0);
-//		Node n3 = struct.addNode(-lb / 2, -lb / Math.sqrt(12.0), 0);
-//		Node n4 = struct.addNode(lb / 2, -lb / Math.sqrt(12.0), 0);
-
-		// apply BCs
-//		n1.setForce(f1);
-//		n2.setConstraint(c1);
-//		n3.setConstraint(c1);
-//		n4.setConstraint(c2);
-		// n1.setPreLoadDisplacement(0, 10e-4, 10e-3);
-
-		// create elements
-//		struct.addElement(e, a, 0, 1);
-//		struct.addElement(e, a, 0, 2);
-//		struct.addElement(e, a, 0, 3);
-//		struct.addElement(e, a, 1, 2);
-//		struct.addElement(e, a, 2, 3);
-//		struct.addElement(e, a, 3, 1);
-
-		// struct.printStructure();
 		// return the new structure
 		return struct;
 	}
 
 	public static void main(String[] args) {
+
 		Viewer viewer = new Viewer();
 		Structure struct = createStructure();
-//		struct.solve();
+		struct.solve();
 		struct.printStructure();
-//		struct.printResults();
-		Visualizer viz = new Visualizer(struct, viewer);
+		struct.printResults();
+		struct.printLargestValues();
 
-		// calculate radius scale
-//		double[] elementsRad = new double[struct.getNumberOfElements()];
-//		for (int i = 0; i < struct.getNumberOfElements(); i++) {
-//			elementsRad[i] = struct.getElement(i).getArea();
-//		}
-//		Arrays.sort(elementsRad);
-		// System.out.println("Biggest value is " + elementsRad[elementsRad.length -
-		// 1]);
-		// double radius = Math.sqrt(elementsRad[elementsRad.length - 1] * 4 / 0.014);
+		double steelTensStr = 2.1e6;
+		double steelTensStrSF = steelTensStr * 1.2;
+		double maxForce = steelTensStrSF * struct.getElement(0).getArea();
+		System.out.println("Max force is: " + maxForce);
+
+		Visualizer viz = new Visualizer(struct, viewer);
 
 		viz.setNodeScale(8e-2);
 		viz.drawNodes();
-		viz.setRadiusScale(0.5);
+		viz.setRadiusScale(1);
 		viz.drawElements();
 		viz.setConstraintScale(0.4);
 		viz.drawConstraints();
 		viz.setArrowShaftScale(2e-3);
 		viz.setArrowRadiusScale(5e-2);
 		viz.drawForces();
-//		viz.setDisplacementScale(3e4);
+		viz.setDisplacementScale(1e-13);
 //		viz.drawDisplacements();
 //		// viz.setElementForceScale(1e-5);
 //		viz.drawElementForces();
