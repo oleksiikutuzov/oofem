@@ -489,7 +489,7 @@ public class Structure {
 		}
 	}
 
-	public double getLargestDisplacement() {
+	public double getLargestForce() {
 		double[] forces = new double[this.getNumberOfElements()];
 		for (int i = 0; i < this.getNumberOfElements(); i++) {
 			forces[i] = this.getElement(i).computeForce();
@@ -497,8 +497,8 @@ public class Structure {
 		Arrays.sort(forces);
 		return forces[forces.length - 1];
 	}
+	public double getLargestDisplacement() {
 	
-	public double getLargestFore() {
 		double[] displacements = new double[this.getNumberOfNodes() * 3];
 		for (int i = 0; i < this.getNumberOfNodes(); i++) {
 			displacements[i] = this.getNode(i).getDisplacement().getX1(); 
@@ -527,6 +527,15 @@ public class Structure {
 		System.out.println("\nListing largest values");
 		System.out.println("Displacements: " + displacements[displacements.length - 1]);
 		System.out.println("Forces: " + forces[forces.length - 1]);
+	}
+	
+	public double getStructureWeight() {
+		double unitWeight = 7850; // kg/m3
+		double totalWeight = 0;
+		for (int i = 0; i < this.getNumberOfElements(); i++) {
+			totalWeight = totalWeight + this.getElement(i).getArea() * this.getElement(i).getArea() * unitWeight;
+		}
+		return totalWeight;
 	}
 
 	// returns number of Nodes in the structure
