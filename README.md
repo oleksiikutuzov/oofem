@@ -1,4 +1,4 @@
-# OOFEM Project SoSe 2029
+# OOFEM Project SoSe 2019
 It’s a small FEM program to solve truss systems.
 
 ## Usage
